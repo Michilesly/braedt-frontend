@@ -17,5 +17,9 @@ export const routes: Routes = [
     path: 'checkout',
     loadComponent: () => import('./features/checkout/checkout.component').then(m => m.CheckoutComponent)
   },
+  {
+    path: 'cuenta', 
+    loadComponent: () => import('./features/account/account.component').then(m => m.AccountComponent)
+  },
   { path: '**', redirectTo: '' } // Redirección de seguridad
 ];

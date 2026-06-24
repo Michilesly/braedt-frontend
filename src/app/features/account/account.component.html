@@ -1,0 +1,66 @@
+  <div class="container my-5">
+    <div class="row justify-content-center">
+      <div class="col-12 col-sm-10 col-md-8 col-lg-5">
+        
+        <!-- CARD PRINCIPAL: INICIO DE SESIÓN -->
+        <div id="loginCard" class="card border-0 shadow-sm rounded-4 p-3 p-md-4 view-card active">
+          <div class="card-body">
+            
+            <!-- Encabezado de la marca -->
+            <div class="text-center mb-4">
+              <h4 class="fw-bold text-dark mb-1">¡Bienvenido de nuevo!</h4>
+              <p class="text-muted small">Ingresa tus credenciales para acceder</p>
+            </div>
+
+            <!-- Formulario de Login -->
+            <form id="loginForm" class="needs-validation" novalidate onsubmit="handleFormSubmit(event, 'login')">
+              
+              <!-- Correo Electrónico -->
+              <div class="mb-3">
+                <label for="loginEmail" class="form-label small fw-semibold text-muted">Correo Electrónico</label>
+                <div class="position-relative">
+                  <input type="email" id="loginEmail" class="form-control form-control-custom rounded-3" placeholder="nombre@correo.com" required>
+                  <div class="invalid-feedback small mt-1">Por favor, introduce un correo electrónico válido.</div>
+                </div>
+              </div>
+
+              <!-- Contraseña -->
+              <div class="mb-3">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <label for="loginPassword" class="form-label small fw-semibold text-muted mb-0">Contraseña</label>
+                  <a href="#" class="text-brand-green small text-decoration-none fw-medium">¿La olvidaste?</a>
+                </div>
+                <div class="position-relative">
+                  <input type="password" id="loginPassword" class="form-control form-control-custom rounded-3" placeholder="••••••••" required>
+                  <span class="material-icons-outlined position-absolute top-50 end-0 translate-middle-y me-3 input-icon-right" onclick="togglePasswordVisibility('loginPassword', this)">visibility</span>
+                  <div class="invalid-feedback small mt-1">La contraseña es obligatoria para iniciar sesión.</div>
+                </div>
+              </div>
+
+              <!-- Recordarme -->
+              <div class="mb-4 d-flex align-items-center">
+                <input class="form-check-input me-2" type="checkbox" id="rememberMe" style="cursor: pointer; accent-color: var(--brand-green);">
+                <label class="form-check-label small text-muted" for="rememberMe" style="cursor: pointer;">Mantener sesión iniciada</label>
+              </div>
+
+              <!-- Botón de Envío -->
+              <button type="submit" class="btn btn-brand-green w-full py-3 rounded-3 fw-semibold w-100 mb-3 d-flex align-items-center justify-content-center">
+                <span>Ingresar</span>
+                <span class="material-icons-outlined ms-2" style="font-size: 18px;">arrow_forward</span>
+              </button>
+
+              <!-- Enlace a Registro -->
+              <div class="text-center">
+                <p class="text-muted small mb-0">¿Aún no tienes una cuenta? 
+                  <a href="#" onclick="switchView('registerCard')" class="text-brand-green fw-bold text-decoration-none">Regístrate gratis</a>
+                </p>
+              </div>
+
+            </form>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+  </div>

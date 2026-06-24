@@ -1,1 +1,48 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  --brand-green: #1B593C;
+  --brand-gold: #e6ac40;
+  --brand-dark-red: #A61508;
+  --brand-vivid-red: #BF0F0F;
+}
+
+body {
+  font-family: 'Satoshi', system-ui, -apple-system, sans-serif;
+  background-color: #f8fafc;
+}
+
+.scrollbar-thin::-webkit-scrollbar { height: 8px; width: 8px; }
+.scrollbar-thin::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 8px; }
+.scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+
+.fade-in { animation: fade-in .2s ease-in-out; }
+@keyframes fade-in { 
+  from { opacity: 0; transform: translateY(4px); } 
+  to { opacity: 1; transform: translateY(0); } 
+}
+
+.skeleton { 
+  background: linear-gradient(90deg, #eee 25%, #f7f7f7 37%, #eee 63%); 
+  background-size: 400% 100%; 
+  animation: shimmer 1.2s ease-in-out infinite; 
+}
+@keyframes shimmer { 
+  0% { background-position: 100% 0; } 
+  100% { background-position: -100% 0; } 
+}
+
+.bg-brand-green { background-color: var(--brand-green) !important; }
+.bg-brand-dark-red { background-color: var(--brand-dark-red) !important; }
+.bg-brand-vivid-red { background-color: var(--brand-vivid-red) !important; }
+.text-brand-gold { color: var(--brand-gold) !important; }
+
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+}
+
+.app-header {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(18px);
+}

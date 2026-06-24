@@ -1,0 +1,43 @@
+<div class="container-xl py-5 mx-auto fade-in" style="max-width: 600px;">
+  
+  @if (!isOrderConfirmed) {
+    <h2 class="fw-bold mb-4">Finalizar Compra</h2>
+    <div class="card border-0 shadow-sm rounded-4">
+      <div class="card-body p-4 p-md-5">
+        <h5 class="fw-bold mb-4">Datos de Envío</h5>
+        <div class="mb-3"><label class="form-label text-muted small fw-medium">Negocio</label><input type="text" class="form-control rounded-3 py-2" [(ngModel)]="customerName"></div>
+        <div class="mb-4"><label class="form-label text-muted small fw-medium">Dirección</label><input type="text" class="form-control rounded-3 py-2" [(ngModel)]="address"></div>
+        
+        <h5 class="fw-bold mb-3 mt-4">Método de Pago</h5>
+        <div class="d-flex flex-column gap-3 mb-5">
+            <label class="border rounded-4 p-3 d-flex align-items-center gap-3 transition-all" [ngClass]="{'border-success bg-success-subtle': paymentMethod === 'tarjeta'}">
+                <input type="radio" class="form-check-input mt-0" value="tarjeta" [(ngModel)]="paymentMethod">
+                <div class="fw-bold">Tarjeta de Crédito</div>
+            </label>
+            <label class="border rounded-4 p-3 d-flex align-items-center gap-3 transition-all" [ngClass]="{'border-success bg-success-subtle': paymentMethod === 'contraentrega'}">
+                <input type="radio" class="form-check-input mt-0" value="contraentrega" [(ngModel)]="paymentMethod">
+                <div class="fw-bold">Pago Contraentrega</div>
+            </label>
+        </div>
+
+        <button class="btn btn-success w-100 py-3 rounded-3 fw-bold fs-5 d-flex justify-content-center align-items-center gap-2" 
+                (click)="confirmOrder()" [disabled]="isProcessing">
+          @if(isProcessing) { <span class="spinner-border spinner-border-sm"></span> Procesando... } 
+          @else { Confirmar Pedido }
+        </button>
+      </div>
+    </div>
+  } @else {
+    <div class="text-center py-5 fade-in">
+      <div class="mb-4 d-inline-flex p-4 bg-success-subtle rounded-circle">
+        <span class="material-icons-outlined text-success" style="font-size: 64px;">check_circle</span>
+      </div>
+      <h2 class="fw-bold">¡Pedido Confirmado!</h2>
+      <p class="text-muted mb-4">Gracias, {{ customerName }}. Tu pedido está en preparación y pronto saldrá para entrega refrigerada.</p>
+      <div class="d-flex gap-3 justify-content-center">
+        <a routerLink="/catalogo" class="btn btn-success px-4 py-2 rounded-pill">Ver catálogo</a>
+        <a routerLink="/ordenes" class="btn btn-outline-secondary px-4 py-2 rounded-pill">Ver mis pedidos</a>
+      </div>
+    </div>
+  }
+</div>

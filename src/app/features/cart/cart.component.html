@@ -1,0 +1,107 @@
+<div class="container-xl py-4">
+  <h2 class="fw-bold mb-4">Tu Carrito de Compras</h2>
+
+  @if (detailedItems.length === 0) {
+    <div class="text-center py-5 bg-white rounded-4 shadow-sm border-0 fade-in">
+      <span class="material-icons-outlined text-muted mb-3" style="font-size: 64px;">remove_shopping_cart</span>
+      <h5 class="fw-semibold">Tu carrito está vacío</h5>
+      <p class="text-muted mb-4">Aún no has agregado embutidos a tu pedido mayorista.</p>
+      <a routerLink="/catalogo" class="btn btn-success px-4 py-2 rounded-pill fw-medium">Volver al catálogo</a>
+    </div>
+  } @else {
+    <div class="row g-4 fade-in">
+      <div class="col-12 col-lg-8">
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+          <div class="table-responsive mb-0">
+            <table class="table table-borderless align-middle mb-0">
+              <thead class="bg-light text-muted small text-uppercase">
+                <tr>
+                  <th class="ps-4 py-3">Producto</th>
+                  <th class="py-3 text-center">Precio Unit.</th>
+                  <th class="py-3 text-center" style="width: 140px;">Cantidad</th>
+                  <th class="py-3 text-end">Subtotal</th>
+                  <th class="pe-4 py-3 text-center"></th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of detailedItems; track item.id) {
+                  <tr class="border-bottom">
+                    <td class="ps-4 py-3">
+                      <div class="d-flex align-items-center gap-3">
+                        <div class="ratio ratio-1x1 bg-light rounded-3 overflow-hidden" style="width: 60px;">
+                          @if (item.product.image) {
+                            <img [src]="item.product.image" [alt]="item.product.name" class="object-fit-cover">
+                          } @else {
+                            <span class="material-icons-outlined text-muted d-flex align-items-center justify-content-center">inventory_2</span>
+                          }
+                        </div>
+                        <div>
+                          <h6 class="mb-1 fw-semibold text-dark text-truncate" style="max-width: 200px;">{{ item.product.name }}</h6>
+                          <div class="small text-muted">{{ item.product.unit }}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="py-3 text-center fw-medium text-nowrap">S/ {{ item.unitPrice | number:'1.2-2' }}</td>
+                    <td class="py-3">
+                      <div class="input-group input-group-sm flex-nowrap border rounded-3 overflow-hidden">
+                        <button class="btn btn-light border-0 px-2" (click)="updateQty(item.id, item.qty - 1)">
+                          <span class="material-icons-outlined fs-6" style="vertical-align: middle;">remove</span>
+                        </button>
+                        <input type="number" class="form-control border-0 text-center bg-white px-0" [value]="item.qty" readonly>
+                        <button class="btn btn-light border-0 px-2" (click)="updateQty(item.id, item.qty + 1)">
+                          <span class="material-icons-outlined fs-6" style="vertical-align: middle;">add</span>
+                        </button>
+                      </div>
+                    </td>
+                    <td class="py-3 text-end fw-bold text-dark text-nowrap">S/ {{ item.lineTotal | number:'1.2-2' }}</td>
+                    <td class="pe-4 py-3 text-end">
+                      <button class="btn btn-link text-danger p-0 text-decoration-none" (click)="removeItem(item.id)">
+                        <span class="material-icons-outlined fs-5">delete_outline</span>
+                      </button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-lg-4">
+        <div class="card border-0 shadow-sm rounded-4 position-sticky" style="top: 80px;">
+          <div class="card-body p-4">
+            <h5 class="fw-bold mb-4">Resumen del Pedido</h5>
+
+            <div class="d-flex justify-content-between mb-3 text-muted">
+              <span>Subtotal</span>
+              <span class="fw-medium text-dark">S/ {{ subtotal | number:'1.2-2' }}</span>
+            </div>
+            
+            <div class="d-flex justify-content-between mb-3 text-muted">
+              <span>Costo de envío</span>
+              @if (shipping === 0) {
+                <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill">Gratis</span>
+              } @else {
+                <span class="fw-medium text-dark">S/ {{ shipping | number:'1.2-2' }}</span>
+              }
+            </div>
+
+            <hr class="text-secondary-subtle my-4">
+
+            <div class="d-flex justify-content-between mb-4">
+              <span class="fw-bold fs-5 text-dark">Total</span>
+              <span class="fw-bold fs-5 text-brand-vivid-red">S/ {{ total | number:'1.2-2' }}</span>
+            </div>
+
+            <button routerLink="/checkout" class="btn btn-success w-100 py-3 rounded-3 fw-bold fs-6">
+            Proceder al Pago
+            </button>
+            <div class="text-center mt-3">
+              <a routerLink="/catalogo" class="text-decoration-none text-muted small">Seguir comprando</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

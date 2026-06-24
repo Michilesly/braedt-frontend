@@ -1,0 +1,84 @@
+<div class="container-xl py-4">
+  
+  <div class="d-flex justify-content-between align-items-end mb-4 border-bottom pb-3">
+    <div>
+      <h2 class="fw-bold mb-1">Catálogo mayorista</h2>
+      <p class="text-muted small mb-0">{{ filteredProducts.length }} productos disponibles</p>
+    </div>
+    <div class="w-25">
+      <select class="form-select bg-light rounded-3" [(ngModel)]="sortOption">
+        <option value="relevance">Ordenar: Relevancia</option>
+        <option value="asc">Menor a mayor precio</option>
+        <option value="desc">Mayor a menor precio</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12 col-lg-3 mb-4">
+      
+      <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card-body p-4">
+          <h6 class="fw-bold mb-3 small">Búsqueda</h6>
+          <div class="position-relative">
+            <span class="material-icons-outlined position-absolute top-50 start-0 translate-middle-y ms-3 text-muted" style="font-size: 18px;">search</span>
+            <input type="text" class="form-control rounded-3 ps-5" placeholder="Buscar..." [(ngModel)]="searchTerm">
+          </div>
+        </div>
+      </div>
+
+      <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card-body p-4">
+          <h6 class="fw-bold mb-3 small">Categoría</h6>
+          <div class="d-flex flex-wrap gap-2">
+            @for (cat of categories; track cat) {
+              <button 
+                class="btn btn-sm rounded-pill px-3 py-2 border"
+                [ngClass]="selectedCategory === cat ? 'btn-outline-success bg-success-subtle fw-bold' : 'btn-white text-muted border-secondary-subtle'"
+                (click)="setCategory(cat)">
+                {{ cat }}
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body p-4">
+          <h6 class="fw-bold mb-3 small">Rango de precio</h6>
+          <div class="d-flex flex-column gap-3">
+            <input type="number" class="form-control rounded-3" placeholder="Min" [(ngModel)]="minPrice">
+            <input type="number" class="form-control rounded-3" placeholder="Max" [(ngModel)]="maxPrice">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-9">
+      @if (isLoading) {
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+          @for (item of [1,2,3,4,5,6]; track item) {
+            <div class="col"><div class="card h-100 border-0 shadow-sm rounded-4 skeleton" style="min-height: 380px;"></div></div>
+          }
+        </div>
+      } @else {
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4 fade-in">
+          @for (product of filteredProducts; track product.id) {
+            <div class="col">
+              <app-product-card [product]="product"></app-product-card>
+            </div>
+          }
+        </div>
+
+        @if (filteredProducts.length === 0) {
+          <div class="text-center py-5 text-muted fade-in">
+            <span class="material-icons-outlined fs-1 mb-2">search_off</span>
+            <h5>No se encontraron productos</h5>
+            <p>Intenta ajustar tus filtros de búsqueda.</p>
+            <button class="btn btn-outline-success rounded-pill mt-2" (click)="searchTerm=''; selectedCategory='Todos'; minPrice=null; maxPrice=null;">Limpiar filtros</button>
+          </div>
+        }
+      }
+    </div>
+  </div>
+</div>

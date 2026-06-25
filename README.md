@@ -6,7 +6,7 @@
 
 ## Tecnologías Utilizadas
 
-- **Angular 22** – Framework principal para el desarrollo frontend.
+- **Angular 22** – Framework principal para el desarrollo .
 - **TypeScript** – Lenguaje utilizado para la lógica de la aplicación.
 - **Bootstrap** – Framework CSS para el diseño responsivo y la interfaz de usuario.
 - **AWS Amplify** – Servicio utilizado para el despliegue y alojamiento de la aplicación.
@@ -16,7 +16,7 @@
 El proyecto fue generado utilizando Angular CLI mediante el siguiente comando:
 
 ```bash
-ng new BraedtFrontend
+ng new Braedt
 ```
 
 Posteriormente se implementaron los componentes, vistas y estilos necesarios para cumplir con los requerimientos funcionales del sistema.

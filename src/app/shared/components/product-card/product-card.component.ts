@@ -30,6 +30,8 @@ export class ProductCardComponent implements OnInit {
 
   public onAddToCart(): void {
     // Agrega el producto y la cantidad mínima al carrito
-    this.cartService.addToCart(this.product.id, this.product.moq || 1);
+    //this.cartService.addToCart(this.product.id, this.product.moq || 1);
+    this.cartService.addToCart(this.product.id, 1);
   }
 }
+

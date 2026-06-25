@@ -40,7 +40,7 @@ npm install
 Para iniciar el servidor local:
 
 ```bash
-ng serve
+ng serve --open
 ```
 
 La aplicación estará disponible en:

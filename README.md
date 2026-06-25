@@ -1,59 +1,92 @@
 # BraedtFrontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.0.0.
+## Descripción
 
-## Development server
+**BraedtFrontend** es una aplicación web desarrollada con **Angular 22** para proporcionar una interfaz moderna, responsiva y de fácil mantenimiento. El proyecto fue construido siguiendo una arquitectura basada en componentes, permitiendo la reutilización de código y una mejor organización del desarrollo.
 
-To start a local development server, run:
+## Tecnologías Utilizadas
+
+- **Angular 22** – Framework principal para el desarrollo frontend.
+- **TypeScript** – Lenguaje utilizado para la lógica de la aplicación.
+- **Bootstrap** – Framework CSS para el diseño responsivo y la interfaz de usuario.
+- **AWS Amplify** – Servicio utilizado para el despliegue y alojamiento de la aplicación.
+
+## Creación del Proyecto
+
+El proyecto fue generado utilizando Angular CLI mediante el siguiente comando:
+
+```bash
+ng new BraedtFrontend
+```
+
+Posteriormente se implementaron los componentes, vistas y estilos necesarios para cumplir con los requerimientos funcionales del sistema.
+
+## Instalación
+
+Clonar el repositorio:
+
+```bash
+git clone <URL_DEL_REPOSITORIO>
+```
+
+Instalar dependencias:
+
+```bash
+npm install
+```
+
+## Ejecución en Desarrollo
+
+Para iniciar el servidor local:
 
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+La aplicación estará disponible en:
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
+```text
+http://localhost:4200
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Compilación
 
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+Para generar la versión de producción:
 
 ```bash
 ng build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Los archivos compilados se almacenarán en la carpeta:
 
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
+```text
+dist/
 ```
 
-## Running end-to-end tests
+## Despliegue
 
-For end-to-end (e2e) testing, run:
+La aplicación fue desplegada utilizando **AWS Amplify**, lo que permite la publicación automática de nuevas versiones y una disponibilidad segura en la nube.
 
-```bash
-ng e2e
+## Estructura General
+
+```text
+src/
+├── app/
+├── assets/
+├── styles.css
+└── main.ts
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## Buenas Prácticas Aplicadas
 
-## Additional Resources
+- Desarrollo basado en componentes.
+- Diseño responsivo con Bootstrap.
+- Organización modular del código.
+- Uso de TypeScript para mejorar la mantenibilidad.
+- Despliegue continuo mediante AWS Amplify.
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Autor
+
+Proyecto desarrollado como parte de las actividades académicas del curso de Desarrollo Web
+
+Grupo 4

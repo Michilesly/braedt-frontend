@@ -1,8 +1,8 @@
-# BraedtFrontend
+# Braedt 
 
 ## Descripción
 
-**BraedtFrontend** es una aplicación web desarrollada con **Angular 22** para proporcionar una interfaz moderna, responsiva y de fácil mantenimiento. El proyecto fue construido siguiendo una arquitectura basada en componentes, permitiendo la reutilización de código y una mejor organización del desarrollo.
+**Braedt** es una aplicación web desarrollada con **Angular 22** para proporcionar una interfaz moderna, responsiva y de fácil mantenimiento. El proyecto fue construido siguiendo una arquitectura basada en componentes, permitiendo la reutilización de código y una mejor organización del desarrollo.
 
 ## Tecnologías Utilizadas
 

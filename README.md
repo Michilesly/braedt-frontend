@@ -26,7 +26,7 @@ Posteriormente se implementaron los componentes, vistas y estilos necesarios par
 Clonar el repositorio:
 
 ```bash
-git clone <URL_DEL_REPOSITORIO>
+git clone https://github.com/Michilesly/braedt-frontend/
 ```
 
 Instalar dependencias:

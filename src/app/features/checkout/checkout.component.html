@@ -1,41 +1,465 @@
-<div class="container-xl py-5 mx-auto fade-in" style="max-width: 600px;">
+<div class="container-xl py-5 mx-auto fade-in" [style.max-width]="isOrderConfirmed ? '600px' : '1100px'">
   
   @if (!isOrderConfirmed) {
-    <h2 class="fw-bold mb-4">Finalizar Compra</h2>
-    <div class="card border-0 shadow-sm rounded-4">
-      <div class="card-body p-4 p-md-5">
-        <h5 class="fw-bold mb-4">Datos de Envío</h5>
-        <div class="mb-3"><label class="form-label text-muted small fw-medium">Negocio</label><input type="text" class="form-control rounded-3 py-2" [(ngModel)]="customerName"></div>
-        <div class="mb-4"><label class="form-label text-muted small fw-medium">Dirección</label><input type="text" class="form-control rounded-3 py-2" [(ngModel)]="address"></div>
-        
-        <h5 class="fw-bold mb-3 mt-4">Método de Pago</h5>
-        <div class="d-flex flex-column gap-3 mb-5">
-            <label class="border rounded-4 p-3 d-flex align-items-center gap-3 transition-all" [ngClass]="{'border-success bg-success-subtle': paymentMethod === 'tarjeta'}">
-                <input type="radio" class="form-check-input mt-0" value="tarjeta" [(ngModel)]="paymentMethod">
-                <div class="fw-bold">Tarjeta de Crédito</div>
-            </label>
-            <label class="border rounded-4 p-3 d-flex align-items-center gap-3 transition-all" [ngClass]="{'border-success bg-success-subtle': paymentMethod === 'contraentrega'}">
-                <input type="radio" class="form-check-input mt-0" value="contraentrega" [(ngModel)]="paymentMethod">
-                <div class="fw-bold">Pago Contraentrega</div>
-            </label>
-        </div>
+    <h2 class="fw-bold mb-4 text-dark text-center text-lg-start">Finalizar Compra</h2>
+    
+    <div class="row g-4">
+      <!-- COLUMNA IZQUIERDA: DATOS DE ENVÍO Y PAGO -->
+      <div class="col-12 col-lg-7">
+        <div class="card border-0 shadow-sm rounded-4 bg-white">
+          <div class="card-body p-4 p-md-5">
+            <h5 class="fw-bold mb-4 text-dark border-bottom pb-2">Datos de Envío</h5>
+            
+            <!-- Negocio -->
+            <div class="mb-3">
+              <label class="form-label text-muted small fw-semibold">Nombre / Razón Social del Destinatario</label>
+              <div class="input-group">
+                <span class="input-group-text bg-light border-end-0 rounded-start-3 text-muted">
+                  <span class="material-icons-outlined fs-5">person</span>
+                </span>
+                <input type="text" class="form-control bg-light border-start-0 rounded-end-3 py-2" [(ngModel)]="customerName" placeholder="Juan Pérez o Razón Social" required>
+              </div>
+            </div>
 
-        <button class="btn btn-success w-100 py-3 rounded-3 fw-bold fs-5 d-flex justify-content-center align-items-center gap-2" 
-                (click)="confirmOrder()" [disabled]="isProcessing">
-          @if(isProcessing) { <span class="spinner-border spinner-border-sm"></span> Procesando... } 
-          @else { Confirmar Pedido }
-        </button>
+            <!-- Dirección -->
+            <div class="mb-3">
+              <label class="form-label text-muted small fw-semibold">Dirección de Entrega</label>
+              <div class="input-group">
+                <span class="input-group-text bg-light border-end-0 rounded-start-3 text-muted">
+                  <span class="material-icons-outlined fs-5">location_on</span>
+                </span>
+                <input type="text" class="form-control bg-light border-start-0 rounded-end-3 py-2" [(ngModel)]="address" placeholder="Av. Principal 123" required>
+              </div>
+            </div>
+
+            <!-- Fecha de Entrega (HU-013) -->
+            <div class="mb-4">
+              <label class="form-label text-muted small fw-semibold">Fecha de Entrega Programada</label>
+              <div class="input-group">
+                <span class="input-group-text bg-light border-end-0 rounded-start-3 text-muted">
+                  <span class="material-icons-outlined fs-5">calendar_today</span>
+                </span>
+                <input type="date" class="form-control bg-light border-start-0 rounded-end-3 py-2" [(ngModel)]="deliveryDate" [min]="minDate" required>
+              </div>
+              <small class="text-muted text-xs mt-1 d-block">La entrega refrigerada se realiza a partir del siguiente día hábil (lunes a sábado).</small>
+            </div>
+            
+            <h5 class="fw-bold mb-3 mt-4 text-dark border-bottom pb-2">Método de Pago</h5>
+            
+            <!-- Selectores de Métodos de Pago (HU-014) -->
+            <div class="row g-3 mb-4 text-start">
+              <!-- Tarjeta -->
+              <div class="col-6 col-sm-3">
+                <label class="border rounded-4 p-2.5 w-100 h-100 d-flex flex-column align-items-center justify-content-center text-center gap-2 transition-all cursor-pointer mb-0" 
+                       [ngClass]="{'border-success bg-success-subtle shadow-sm': paymentMethod === 'tarjeta', 'border-secondary-subtle bg-light': paymentMethod !== 'tarjeta'}">
+                  <input type="radio" class="d-none" value="tarjeta" [(ngModel)]="paymentMethod">
+                  <span class="material-icons-outlined text-muted fs-4">credit_card</span>
+                  <span class="fw-bold text-dark text-xs d-block">Tarjeta</span>
+                </label>
+              </div>
+              
+              <!-- Yape -->
+              <div class="col-6 col-sm-3">
+                <label class="border rounded-4 p-2.5 w-100 h-100 d-flex flex-column align-items-center justify-content-center text-center gap-2 transition-all cursor-pointer mb-0" 
+                       [style.border-color]="paymentMethod === 'yape' ? '#742284' : ''"
+                       [style.background-color]="paymentMethod === 'yape' ? '#74228415' : ''"
+                       [ngClass]="{'border-secondary-subtle bg-light': paymentMethod !== 'yape'}">
+                  <input type="radio" class="d-none" value="yape" [(ngModel)]="paymentMethod">
+                  <div class="rounded-2 text-white fw-bold d-flex align-items-center justify-content-center text-xs" style="width: 24px; height: 24px; background: #742284;">Y</div>
+                  <span class="fw-bold text-dark text-xs d-block">Yape</span>
+                </label>
+              </div>
+
+              <!-- Plin -->
+              <div class="col-6 col-sm-3">
+                <label class="border rounded-4 p-2.5 w-100 h-100 d-flex flex-column align-items-center justify-content-center text-center gap-2 transition-all cursor-pointer mb-0" 
+                       [style.border-color]="paymentMethod === 'plin' ? '#0891B2' : ''"
+                       [style.background-color]="paymentMethod === 'plin' ? '#0891B215' : ''"
+                       [ngClass]="{'border-secondary-subtle bg-light': paymentMethod !== 'plin'}">
+                  <input type="radio" class="d-none" value="plin" [(ngModel)]="paymentMethod">
+                  <div class="rounded-2 text-white fw-bold d-flex align-items-center justify-content-center text-xs" style="width: 24px; height: 24px; background: #0891B2;">P</div>
+                  <span class="fw-bold text-dark text-xs d-block">Plin</span>
+                </label>
+              </div>
+
+              <!-- Contraentrega -->
+              <div class="col-6 col-sm-3">
+                <label class="border rounded-4 p-2.5 w-100 h-100 d-flex flex-column align-items-center justify-content-center text-center gap-2 transition-all cursor-pointer mb-0" 
+                       [ngClass]="{'border-success bg-success-subtle shadow-sm': paymentMethod === 'contraentrega', 'border-secondary-subtle bg-light': paymentMethod !== 'contraentrega'}">
+                  <input type="radio" class="d-none" value="contraentrega" [(ngModel)]="paymentMethod">
+                  <span class="material-icons-outlined text-muted fs-4">payments</span>
+                  <span class="fw-bold text-dark text-xs d-block">Efectivo</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Formularios de Métodos de Pago Condicionales (HU-014) -->
+            
+            <!-- FORMULARIO: TARJETA -->
+            @if (paymentMethod === 'tarjeta') {
+              <div class="bg-light p-3.5 rounded-4 border border-light-subtle mb-3 animate-fade-in text-start">
+                <!-- Número de Tarjeta -->
+                <div class="mb-3">
+                  <label class="form-label text-muted small fw-semibold">Número de Tarjeta</label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0 rounded-start-3 text-muted">
+                      <span class="material-icons-outlined fs-5">payment</span>
+                    </span>
+                    <input type="text" 
+                           class="form-control bg-white border-start-0 py-2 text-dark font-monospace" 
+                           placeholder="0000 0000 0000 0000" 
+                           [value]="cardNumber" 
+                           (input)="onCardNumberInput($event)" 
+                           required>
+                    <span class="input-group-text bg-white border-start-0 rounded-end-3 pe-3">
+                      <!-- Visa Logo SVG -->
+                      @if (detectedCardBrand === 'visa') {
+                        <svg width="36" height="24" viewBox="0 0 36 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <rect width="36" height="24" rx="4" fill="#0E4595"/>
+                          <path d="M14.86 16.03l2.22-6.52h1.65l-2.22 6.52h-1.65zm7.32-6.39c-.31-.13-.81-.27-1.42-.27-1.5 0-2.56.76-2.57 1.84-.01.8.75 1.25 1.33 1.52.59.27.79.45.79.7-.01.37-.47.54-.91.54-.61 0-1.07-.15-1.43-.31l-.25-.12-.27 1.58c.45.2.1.37.52.54.54.21 1.22.31 1.93.31 1.88 0 3.1-.88 3.11-2.25.01-.73-.46-1.28-1.47-1.74-.61-.3-.98-.5-.97-.8.01-.27.32-.56.99-.56.57 0 1.01.12 1.34.26l.16.07.25-1.52zm4.18 2.53c-.15-.4-.74-1.91-.74-1.91-.01.02-.15.4-.74 1.91h1.48zm.49-3.79h1.37c.36 0 .52.12.58.33l1.86 5.33h-1.71c-.08-.24-.26-.74-.26-.74h-2.02c-.05.21-.19.74-.19.74h-1.52l1.89-5.66zm-17.72.63l.16.89 1.48 4.77h1.75l-2.61-6.52H8.48c-.46 0-.82.26-.98.57l-2.5 5.95h1.75l1.08-2.9 2.11-.76z" fill="#FFF"/>
+                        </svg>
+                      }
+                      <!-- Mastercard Logo SVG -->
+                      @else if (detectedCardBrand === 'mastercard') {
+                        <svg width="36" height="24" viewBox="0 0 36 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <rect width="36" height="24" rx="4" fill="#0A0A0A"/>
+                          <circle cx="14" cy="12" r="7" fill="#EB001B" fill-opacity="0.9"/>
+                          <circle cx="22" cy="12" r="7" fill="#F79E1B" fill-opacity="0.9"/>
+                          <path d="M18 12a6.975 6.975 0 012.75-5.55 6.975 6.975 0 00-5.5 0A6.975 6.975 0 0118 12z" fill="#FF5F00"/>
+                        </svg>
+                      }
+                      <!-- Amex Logo SVG -->
+                      @else if (detectedCardBrand === 'amex') {
+                        <svg width="36" height="24" viewBox="0 0 36 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <rect width="36" height="24" rx="4" fill="#016FD0"/>
+                          <text x="4" y="15" fill="#FFF" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="7.5" letter-spacing="0.5">AMEX</text>
+                        </svg>
+                      }
+                      <!-- Default card SVG -->
+                      @else {
+                        <svg width="36" height="24" viewBox="0 0 36 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <rect width="36" height="24" rx="4" fill="#E2E8F0"/>
+                          <rect x="4" y="6" width="28" height="4" fill="#64748B"/>
+                          <rect x="4" y="14" width="8" height="4" fill="#94A3B8"/>
+                          <rect x="14" y="14" width="18" height="4" fill="#CBD5E1"/>
+                        </svg>
+                      }
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Nombre en la Tarjeta -->
+                <div class="mb-3">
+                  <label class="form-label text-muted small fw-semibold">Titular de la Tarjeta</label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0 rounded-start-3 text-muted">
+                      <span class="material-icons-outlined fs-5">person</span>
+                    </span>
+                    <input type="text" class="form-control bg-white border-start-0 rounded-end-3 py-2 text-dark" placeholder="Juan Pérez" [(ngModel)]="cardName" required>
+                  </div>
+                </div>
+
+                <!-- Fecha de Expiración y CVV -->
+                <div class="row g-3">
+                  <div class="col-6">
+                    <label class="form-label text-muted small fw-semibold">Expiración (MM/AA)</label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-white border-end-0 rounded-start-3 text-muted">
+                        <span class="material-icons-outlined fs-5">date_range</span>
+                      </span>
+                      <input type="text" 
+                             class="form-control bg-white border-start-0 rounded-end-3 py-2 text-dark font-monospace" 
+                             placeholder="MM/AA" 
+                             [value]="cardExpiry" 
+                             (input)="onCardExpiryInput($event)" 
+                             required>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <label class="form-label text-muted small fw-semibold">Código de Seg. (CVV)</label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-white border-end-0 rounded-start-3 text-muted">
+                        <span class="material-icons-outlined fs-5">lock</span>
+                      </span>
+                      <input type="password" 
+                             class="form-control bg-white border-start-0 rounded-end-3 py-2 text-dark font-monospace" 
+                             placeholder="123" 
+                             [value]="cardCvv" 
+                             (input)="onCardCvvInput($event)" 
+                             required>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            }
+
+            <!-- FORMULARIO: YAPE -->
+            @if (paymentMethod === 'yape') {
+              <div class="bg-light p-3.5 rounded-4 border border-light-subtle mb-3 animate-fade-in text-start">
+                <div class="mb-3">
+                  <label class="form-label text-muted small fw-semibold">Celular Yape (9 dígitos)</label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0 rounded-start-3 text-muted">
+                      <span class="material-icons-outlined fs-5">phone_iphone</span>
+                    </span>
+                    <input type="text" 
+                           class="form-control bg-white border-start-0 rounded-end-3 py-2 text-dark font-monospace" 
+                           placeholder="987654321" 
+                           [value]="walletPhone" 
+                           (input)="onWalletPhoneInput($event)" 
+                           required>
+                  </div>
+                </div>
+
+                <div class="mb-2">
+                  <label class="form-label text-muted small fw-semibold">Código de Aprobación Yape (6 dígitos)</label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0 rounded-start-3 text-muted">
+                      <span class="material-icons-outlined fs-5">vpn_key</span>
+                    </span>
+                    <input type="text" 
+                           class="form-control bg-white border-start-0 rounded-end-3 py-2 text-dark font-monospace" 
+                           placeholder="123456" 
+                           [value]="yapeOtp" 
+                           (input)="onYapeOtpInput($event)" 
+                           required>
+                  </div>
+                </div>
+                <small class="text-muted text-xxs d-block lh-sm">
+                  1. Abre tu app Yape.<br>
+                  2. Ingresa al menú superior y selecciona "Yapear en internet".<br>
+                  3. Copia el código de 6 dígitos e ingrésalo aquí para autorizar el cobro.
+                </small>
+              </div>
+            }
+
+            <!-- FORMULARIO: PLIN -->
+            @if (paymentMethod === 'plin') {
+              <div class="bg-light p-3.5 rounded-4 border border-light-subtle mb-3 animate-fade-in text-start">
+                <div class="mb-3">
+                  <label class="form-label text-muted small fw-semibold">Celular Plin (9 dígitos)</label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0 rounded-start-3 text-muted">
+                      <span class="material-icons-outlined fs-5">phone_iphone</span>
+                    </span>
+                    <input type="text" 
+                           class="form-control bg-white border-start-0 rounded-end-3 py-2 text-dark font-monospace" 
+                           placeholder="987654321" 
+                           [value]="walletPhone" 
+                           (input)="onWalletPhoneInput($event)" 
+                           required>
+                  </div>
+                </div>
+
+                <!-- QR Vectorial SVG Plin -->
+                <div class="d-flex flex-column align-items-center justify-content-center bg-white p-3 rounded-4 border shadow-sm my-3 mx-auto" style="max-width: 220px;">
+                  <div class="d-flex align-items-center gap-1.5 mb-2">
+                    <div class="rounded-2 d-flex align-items-center justify-content-center text-white fw-bold" style="width: 20px; height: 20px; font-size: 10px; background: #0891B2;">P</div>
+                    <span class="fw-bold text-dark text-xxs">Escanea para pagar con Plin</span>
+                  </div>
+                  
+                  <div class="p-1.5 border rounded-3 bg-white">
+                    <svg width="110" height="110" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                      <rect x="5" y="5" width="30" height="30" fill="#0891B2" rx="2"/>
+                      <rect x="11" y="11" width="18" height="18" fill="#FFF" rx="1"/>
+                      <rect x="15" y="15" width="10" height="10" fill="#EAB308" rx="0.5"/>
+                      
+                      <rect x="85" y="5" width="30" height="30" fill="#0891B2" rx="2"/>
+                      <rect x="91" y="11" width="18" height="18" fill="#FFF" rx="1"/>
+                      <rect x="95" y="15" width="10" height="10" fill="#EAB308" rx="0.5"/>
+                      
+                      <rect x="5" y="85" width="30" height="30" fill="#0891B2" rx="2"/>
+                      <rect x="11" y="91" width="18" height="18" fill="#FFF" rx="1"/>
+                      <rect x="15" y="95" width="10" height="10" fill="#EAB308" rx="0.5"/>
+                      
+                      <rect x="45" y="45" width="30" height="30" fill="#F8FAFC" rx="4" stroke="#E2E8F0" stroke-width="1"/>
+                      <text x="53" y="66" fill="#0891B2" font-family="sans-serif" font-weight="900" font-size="18">P</text>
+                      
+                      <path d="M45 10h10M65 15h15M45 25h5M75 25h10M5 45h15M5 60h8M30 45h5M30 65h10M85 45h15M105 55h10M105 70h10M45 85h15M70 85h10M45 105h20M75 105h15M105 85h5M105 105h10M45 75h5M65 35h5M50 35h5" stroke="#1E293B" stroke-width="3" stroke-linecap="round" fill="none"/>
+                      <path d="M55 5h5M70 5h5M55 20h10M40 15h5M15 45h5M20 50h5M10 70h5M25 75h5M85 35h10M100 45h5M95 65h5M90 75h10M15 85h5M30 95h5M35 105h5M30 110h5" stroke="#EAB308" stroke-width="3" stroke-linecap="round" fill="none"/>
+                    </svg>
+                  </div>
+                  <small class="text-muted text-xxs mt-2 text-center">QR interbancario Plin</small>
+                </div>
+              </div>
+            }
+
+            <!-- FORMULARIO: CONTRAENTREGA -->
+            @if (paymentMethod === 'contraentrega') {
+              <div class="bg-light p-3 rounded-4 border border-light-subtle mb-3 animate-fade-in text-start">
+                <span class="d-flex align-items-center gap-2 text-muted text-xs">
+                  <span class="material-icons-outlined text-success">info</span>
+                  <span>Pagas en efectivo o tarjeta al recibir tu pedido refrigerado en tu dirección de entrega.</span>
+                </span>
+              </div>
+            }
+
+          </div>
+        </div>
+      </div>
+
+      <!-- COLUMNA DERECHA: RESUMEN DE COMPRA (HU-015) -->
+      <div class="col-12 col-lg-5">
+        <div class="card border-0 shadow-sm rounded-4 bg-white position-sticky" style="top: 80px;">
+          <div class="card-body p-4">
+            <h5 class="fw-bold mb-4 text-dark border-bottom pb-2">Resumen de Compra</h5>
+            
+            <!-- Listado de Productos -->
+            <div class="overflow-auto scrollbar-thin mb-4" style="max-height: 240px;">
+              <div class="d-flex flex-column gap-3 pe-1">
+                @for (item of detailedItems; track item.id) {
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                      <div class="bg-light rounded-3 d-flex align-items-center justify-content-center border" style="width: 44px; height: 44px; flex-shrink: 0;">
+                        @if (item.product.image) {
+                          <img [src]="item.product.image" [alt]="item.product.name" class="w-100 h-100 object-fit-cover rounded-3">
+                        } @else {
+                          <span class="material-icons-outlined text-muted fs-5">inventory_2</span>
+                        }
+                      </div>
+                      <div>
+                        <span class="d-block fw-semibold text-dark text-truncate small animate-text" style="max-width: 170px;">{{ item.product.name }}</span>
+                        <span class="text-muted text-xs">{{ item.qty }} x S/ {{ item.unitPrice | number:'1.2-2' }}</span>
+                      </div>
+                    </div>
+                    <span class="fw-bold text-dark small text-nowrap">S/ {{ item.lineTotal | number:'1.2-2' }}</span>
+                  </div>
+                }
+              </div>
+            </div>
+
+            <!-- Importes -->
+            <div class="d-flex justify-content-between mb-2 text-muted small">
+              <span>Subtotal</span>
+              <span class="fw-semibold text-dark">S/ {{ subtotal | number:'1.2-2' }}</span>
+            </div>
+            
+            <div class="d-flex justify-content-between mb-3 text-muted small">
+              <span>Costo de envío</span>
+              @if (shipping === 0) {
+                <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-0.5" style="font-size: 11px;">Gratis</span>
+              } @else {
+                <span class="fw-semibold text-dark">S/ {{ shipping | number:'1.2-2' }}</span>
+              }
+            </div>
+
+            <hr class="text-secondary-subtle my-3">
+
+            <div class="d-flex justify-content-between mb-4">
+              <span class="fw-bold fs-5 text-dark">Total</span>
+              <span class="fw-bold fs-5 text-brand-vivid-red">S/ {{ total | number:'1.2-2' }}</span>
+            </div>
+
+            <!-- Resumen de Destino e Información en Tiempo Real (HU-015 y HU-014) -->
+            <div class="bg-light p-3 rounded-4 mb-4 border border-light-subtle text-xs">
+              <span class="d-block fw-bold text-dark mb-1.5 text-uppercase tracking-wider">Detalles de la Entrega</span>
+              @if (address || deliveryDate || paymentMethod) {
+                <ul class="list-unstyled mb-0 d-flex flex-column gap-2 text-muted">
+                  @if (address) {
+                    <li class="d-flex align-items-start gap-1.5">
+                      <span class="material-icons-outlined text-success" style="font-size: 16px; margin-top: 1px;">location_on</span>
+                      <span><strong>Enviar a:</strong> {{ address }}</span>
+                    </li>
+                  }
+                  @if (deliveryDate) {
+                    <li class="d-flex align-items-start gap-1.5">
+                      <span class="material-icons-outlined text-success" style="font-size: 16px; margin-top: 1px;">event</span>
+                      <span><strong>Fecha programada:</strong> {{ deliveryDate | date:'dd/MM/yyyy' }}</span>
+                    </li>
+                  }
+                  <li class="d-flex align-items-start gap-1.5">
+                    <span class="material-icons-outlined text-success" style="font-size: 16px; margin-top: 1px;">payments</span>
+                    <span><strong>Pago:</strong> 
+                      @if (paymentMethod === 'tarjeta') { 
+                        Tarjeta 
+                        @if (detectedCardBrand === 'visa') { (Visa) }
+                        @else if (detectedCardBrand === 'mastercard') { (Mastercard) }
+                        @else if (detectedCardBrand === 'amex') { (Amex) }
+                      } @else if (paymentMethod === 'yape') { Yape
+                      } @else if (paymentMethod === 'plin') { Plin
+                      } @else { Contraentrega }
+                    </span>
+                  </li>
+                </ul>
+              } @else {
+                <span class="text-muted italic">Ingresa tus datos de envío en el formulario.</span>
+              }
+            </div>
+
+            <!-- Botón de Acción -->
+            <button class="btn btn-success w-100 py-3 rounded-3 fw-bold fs-6 d-flex justify-content-center align-items-center gap-2 shadow-sm" 
+                    (click)="confirmOrder()" [disabled]="isProcessing || !customerName || !address || !deliveryDate || !isPaymentFormValid()">
+              @if(isProcessing) { <span class="spinner-border spinner-border-sm"></span> Procesando... } 
+              @else { Confirmar Pedido }
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   } @else {
     <div class="text-center py-5 fade-in">
-      <div class="mb-4 d-inline-flex p-4 bg-success-subtle rounded-circle">
+      <div class="mb-4 d-inline-flex p-4 bg-success-subtle rounded-circle shadow-sm">
         <span class="material-icons-outlined text-success" style="font-size: 64px;">check_circle</span>
       </div>
-      <h2 class="fw-bold">¡Pedido Confirmado!</h2>
-      <p class="text-muted mb-4">Gracias, {{ customerName }}. Tu pedido está en preparación y pronto saldrá para entrega refrigerada.</p>
-      <div class="d-flex gap-3 justify-content-center">
-        <a routerLink="/catalogo" class="btn btn-success px-4 py-2 rounded-pill">Ver catálogo</a>
+      <h2 class="fw-bold text-dark mb-2">¡Pedido Confirmado!</h2>
+      
+      <!-- Código Único de Pedido (HU-016) -->
+      <div class="mb-4 p-3 bg-light rounded-4 border border-light-subtle d-inline-block mx-auto px-4 shadow-sm" style="max-width: 320px;">
+        <span class="text-muted text-xs text-uppercase fw-semibold tracking-wider d-block">Código de Seguimiento</span>
+        <span class="fs-4 fw-bold text-brand-vivid-red mt-1 d-block">{{ orderCode }}</span>
+      </div>
+
+      <p class="text-muted mb-4 px-3">
+        Gracias, {{ customerName }}. Tu pedido está en preparación y se despachará bajo estricta cadena de frío.<br>
+        <span class="text-success small fw-semibold d-inline-flex align-items-center gap-1.5 mt-2 bg-success-subtle px-3 py-1.5 rounded-pill border border-success-subtle">
+          <span class="material-icons-outlined fs-6" style="font-size: 16px;">mail_outline</span>
+          Se ha enviado la confirmación y el detalle de la compra a tu correo electrónico.
+        </span>
+      </p>
+      
+      <!-- Resumen Detallado del Envío (HU-012 & HU-013 & HU-014) -->
+      <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white text-start mx-auto" style="max-width: 480px;">
+        <h6 class="fw-bold text-dark mb-3 pb-2 border-bottom text-uppercase tracking-wider small">Detalles del Despacho</h6>
+        <div class="d-flex flex-column gap-3 small text-muted">
+          <div class="d-flex align-items-start gap-2.5">
+            <span class="material-icons-outlined text-success mt-0.5" style="font-size: 18px;">location_on</span>
+            <div>
+              <span class="d-block fw-semibold text-dark">Dirección de Entrega:</span>
+              <span>{{ address }}</span>
+            </div>
+          </div>
+          <div class="d-flex align-items-start gap-2.5">
+            <span class="material-icons-outlined text-success mt-0.5" style="font-size: 18px;">event</span>
+            <div>
+              <span class="d-block fw-semibold text-dark">Fecha de Despacho Programada:</span>
+              <span>{{ deliveryDate | date:'dd/MM/yyyy' }}</span>
+            </div>
+          </div>
+          <div class="d-flex align-items-start gap-2.5">
+            <span class="material-icons-outlined text-success mt-0.5" style="font-size: 18px;">payments</span>
+            <div>
+              <span class="d-block fw-semibold text-dark">Método de Pago:</span>
+              <span>
+                @if (paymentMethod === 'tarjeta') {
+                  Tarjeta de Crédito / Débito
+                  @if (detectedCardBrand !== 'unknown') {
+                    ({{ detectedCardBrand | uppercase }})
+                  }
+                } @else if (paymentMethod === 'yape') {
+                  Yape
+                } @else if (paymentMethod === 'plin') {
+                  Plin
+                } @else {
+                  Pago Contraentrega
+                }
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex gap-3 justify-content-center pt-2">
+        <a routerLink="/catalogo" class="btn btn-success px-4 py-2 rounded-pill shadow-sm">Ver catálogo</a>
         <a routerLink="/ordenes" class="btn btn-outline-secondary px-4 py-2 rounded-pill">Ver mis pedidos</a>
       </div>
     </div>

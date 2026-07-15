@@ -1,26 +1,50 @@
-  <div class="container my-5">
-    <div class="row justify-content-center">
-      <div class="col-12 col-sm-10 col-md-8 col-lg-5">
-        
-        <!-- CARD PRINCIPAL: INICIO DE SESIÓN -->
-        <div id="loginCard" class="card border-0 shadow-sm rounded-4 p-3 p-md-4 view-card active">
+<div class="container my-5 fade-in">
+  <div class="row justify-content-center">
+    <div class="col-12 col-sm-10 col-md-8 col-lg-6">
+
+      <!-- ==================== VISTA: INICIO DE SESIÓN ==================== -->
+      @if (viewState === 'login') {
+        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
           <div class="card-body">
             
-            <!-- Encabezado de la marca -->
             <div class="text-center mb-4">
-              <h4 class="fw-bold text-dark mb-1">¡Bienvenido de nuevo!</h4>
-              <p class="text-muted small">Ingresa tus credenciales para acceder</p>
+              <h3 class="fw-bold text-dark mb-1">¡Bienvenido de nuevo!</h3>
+              <p class="text-muted small">Ingresa tus credenciales para acceder a la plataforma mayorista</p>
             </div>
 
-            <!-- Formulario de Login -->
-            <form id="loginForm" class="needs-validation" novalidate onsubmit="handleFormSubmit(event, 'login')">
+            <!-- Alerta de Error de Login -->
+            @if (loginError) {
+              <div class="alert alert-danger border-0 rounded-3 d-flex align-items-center gap-2 small py-2.5 px-3 mb-4" role="alert">
+                <span class="material-icons-outlined text-danger fs-5">error_outline</span>
+                <span>{{ loginError }}</span>
+              </div>
+            }
+
+            <form [formGroup]="loginForm" (ngSubmit)="onLogin()" novalidate>
               
               <!-- Correo Electrónico -->
               <div class="mb-3">
                 <label for="loginEmail" class="form-label small fw-semibold text-muted">Correo Electrónico</label>
-                <div class="position-relative">
-                  <input type="email" id="loginEmail" class="form-control form-control-custom rounded-3" placeholder="nombre@correo.com" required>
-                  <div class="invalid-feedback small mt-1">Por favor, introduce un correo electrónico válido.</div>
+                <div class="input-group">
+                  <span class="input-group-text bg-light border-end-0 rounded-start-3 text-muted">
+                    <span class="material-icons-outlined fs-5">mail</span>
+                  </span>
+                  <input 
+                    type="email" 
+                    id="loginEmail" 
+                    formControlName="email"
+                    class="form-control bg-light border-start-0 rounded-end-3" 
+                    [class.is-invalid]="lf['email'].touched && lf['email'].invalid"
+                    placeholder="ejemplo@correo.com" 
+                    autocomplete="email"
+                    required
+                  />
+                  @if (lf['email'].touched && lf['email'].invalid) {
+                    <div class="invalid-feedback small mt-1">
+                      @if (lf['email'].errors?.['required']) { El correo electrónico es requerido. }
+                      @if (lf['email'].errors?.['email']) { Por favor, introduce un correo válido. }
+                    </div>
+                  }
                 </div>
               </div>
 
@@ -28,39 +52,681 @@
               <div class="mb-3">
                 <div class="d-flex justify-content-between align-items-center mb-1">
                   <label for="loginPassword" class="form-label small fw-semibold text-muted mb-0">Contraseña</label>
-                  <a href="#" class="text-brand-green small text-decoration-none fw-medium">¿La olvidaste?</a>
+                  <a href="#" class="text-brand-green small text-decoration-none fw-semibold hover-link">¿La olvidaste?</a>
                 </div>
-                <div class="position-relative">
-                  <input type="password" id="loginPassword" class="form-control form-control-custom rounded-3" placeholder="••••••••" required>
-                  <span class="material-icons-outlined position-absolute top-50 end-0 translate-middle-y me-3 input-icon-right" onclick="togglePasswordVisibility('loginPassword', this)">visibility</span>
-                  <div class="invalid-feedback small mt-1">La contraseña es obligatoria para iniciar sesión.</div>
+                <div class="input-group">
+                  <span class="input-group-text bg-light border-end-0 rounded-start-3 text-muted">
+                    <span class="material-icons-outlined fs-5">lock</span>
+                  </span>
+                  <input 
+                    [type]="showLoginPasswordFlag ? 'text' : 'password'" 
+                    id="loginPassword" 
+                    formControlName="password"
+                    class="form-control bg-light border-start-0 border-end-0" 
+                    [class.is-invalid]="lf['password'].touched && lf['password'].invalid"
+                    placeholder="••••••••" 
+                    autocomplete="current-password"
+                    required
+                  />
+                  <button 
+                    type="button" 
+                    class="input-group-text bg-light border-start-0 rounded-end-3 text-muted hover-opacity cursor-pointer border" 
+                    (click)="togglePasswordVisibility('login')"
+                    style="border-color: #dee2e6;"
+                  >
+                    <span class="material-icons-outlined fs-5">
+                      {{ showLoginPasswordFlag ? 'visibility_off' : 'visibility' }}
+                    </span>
+                  </button>
+                  @if (lf['password'].touched && lf['password'].invalid) {
+                    <div class="invalid-feedback small mt-1">
+                      La contraseña es requerida para iniciar sesión.
+                    </div>
+                  }
                 </div>
               </div>
 
               <!-- Recordarme -->
               <div class="mb-4 d-flex align-items-center">
-                <input class="form-check-input me-2" type="checkbox" id="rememberMe" style="cursor: pointer; accent-color: var(--brand-green);">
-                <label class="form-check-label small text-muted" for="rememberMe" style="cursor: pointer;">Mantener sesión iniciada</label>
+                <input 
+                  type="checkbox" 
+                  id="rememberMe" 
+                  formControlName="rememberMe"
+                  class="form-check-input me-2" 
+                  style="cursor: pointer; accent-color: var(--brand-green);"
+                />
+                <label class="form-check-label small text-muted cursor-pointer" for="rememberMe">
+                  Mantener mi sesión iniciada
+                </label>
               </div>
 
               <!-- Botón de Envío -->
-              <button type="submit" class="btn btn-brand-green w-full py-3 rounded-3 fw-semibold w-100 mb-3 d-flex align-items-center justify-content-center">
-                <span>Ingresar</span>
-                <span class="material-icons-outlined ms-2" style="font-size: 18px;">arrow_forward</span>
+              <button 
+                type="submit" 
+                [disabled]="isLoading"
+                class="btn btn-brand-green w-100 py-2.5 rounded-3 fw-bold mb-3 d-flex align-items-center justify-content-center gap-2 position-relative shadow-sm"
+              >
+                @if (isLoading) {
+                  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                  <span>Iniciando sesión...</span>
+                } @else {
+                  <span>Ingresar</span>
+                  <span class="material-icons-outlined fs-5">arrow_forward</span>
+                }
               </button>
 
               <!-- Enlace a Registro -->
-              <div class="text-center">
-                <p class="text-muted small mb-0">¿Aún no tienes una cuenta? 
-                  <a href="#" onclick="switchView('registerCard')" class="text-brand-green fw-bold text-decoration-none">Regístrate gratis</a>
+              <div class="text-center pt-2">
+                <p class="text-muted small mb-0">
+                  ¿Aún no tienes una cuenta corporativa?
+                  <button 
+                    type="button" 
+                    (click)="switchView('register')" 
+                    class="btn btn-link text-brand-green p-0 fw-bold text-decoration-none ms-1 small align-baseline"
+                  >
+                    Regístrate gratis
+                  </button>
                 </p>
               </div>
 
             </form>
           </div>
         </div>
+      }
 
+      <!-- ==================== VISTA: REGISTRO DE USUARIO ==================== -->
+      @if (viewState === 'register') {
+        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+          <div class="card-body">
+            
+            <div class="text-center mb-4">
+              <h3 class="fw-bold text-dark mb-1">Crea tu cuenta</h3>
+              <p class="text-muted small">Accede a precios mayoristas y escalas por volumen exclusivos de Braedt</p>
+            </div>
 
-      </div>
+            <!-- Alerta de Error de Registro -->
+            @if (registerError) {
+              <div class="alert alert-danger border-0 rounded-3 d-flex align-items-center gap-2 small py-2.5 px-3 mb-4" role="alert">
+                <span class="material-icons-outlined text-danger fs-5">error_outline</span>
+                <span>{{ registerError }}</span>
+              </div>
+            }
+
+            <form [formGroup]="registerForm" (ngSubmit)="onRegister()" novalidate>
+              
+              <!-- Checkbox Soy Empresa -->
+              <div class="mb-3 p-3 bg-light rounded-3 d-flex align-items-center justify-content-between border border-light-subtle">
+                <div>
+                  <h6 class="mb-0 fw-semibold small text-dark">¿Compras a nombre de una empresa?</h6>
+                  <small class="text-muted text-xs">Habilita esta opción para facturación y precios corporativos</small>
+                </div>
+                <div class="form-check form-switch mb-0">
+                  <input 
+                    type="checkbox" 
+                    id="isCompany" 
+                    formControlName="isCompany"
+                    class="form-check-input cursor-pointer"
+                    role="switch"
+                    style="height: 1.5em; width: 2.7em; accent-color: var(--brand-green);"
+                    (change)="onCompanyToggle($event)"
+                  />
+                </div>
+              </div>
+
+              <!-- Nombre Completo / Razón Social -->
+              @if (!isCorporateAccount) {
+                <!-- Persona Natural -->
+                <div class="mb-3">
+                  <label for="regName" class="form-label small fw-semibold text-muted">Nombre Completo</label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0 rounded-start-3 text-muted">
+                      <span class="material-icons-outlined fs-5">person</span>
+                    </span>
+                    <input 
+                      type="text" 
+                      id="regName" 
+                      formControlName="name"
+                      class="form-control bg-light border-start-0 rounded-end-3" 
+                      [class.is-invalid]="rf['name'].touched && rf['name'].invalid"
+                      placeholder="Juan Pérez" 
+                      required
+                    />
+                    @if (rf['name'].touched && rf['name'].invalid) {
+                      <div class="invalid-feedback small mt-1">
+                        @if (rf['name'].errors?.['required']) { El nombre es obligatorio. }
+                        @if (rf['name'].errors?.['minlength']) { Debe tener al menos 3 caracteres. }
+                      </div>
+                    }
+                  </div>
+                </div>
+              } @else {
+                <!-- Persona Jurídica (Empresa) -->
+                <div class="row g-3 mb-3">
+                  <!-- RUC -->
+                  <div class="col-12 col-md-5">
+                    <label for="regRuc" class="form-label small fw-semibold text-muted">RUC</label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-light border-end-0 rounded-start-3 text-muted">
+                        <span class="material-icons-outlined fs-5">business</span>
+                      </span>
+                      <input 
+                        type="text" 
+                        id="regRuc" 
+                        formControlName="ruc"
+                        class="form-control bg-light border-start-0 rounded-end-3" 
+                        [class.is-invalid]="rf['ruc'].touched && rf['ruc'].invalid"
+                        placeholder="11 dígitos" 
+                        maxlength="11"
+                        required
+                      />
+                      @if (rf['ruc'].touched && rf['ruc'].invalid) {
+                        <div class="invalid-feedback small mt-1">
+                          @if (rf['ruc'].errors?.['requiredIfCompany']) { El RUC es requerido para empresas. }
+                          @if (rf['ruc'].errors?.['pattern']) { Debe tener exactamente 11 dígitos. }
+                        </div>
+                      }
+                    </div>
+                  </div>
+
+                  <!-- Razón Social -->
+                  <div class="col-12 col-md-7">
+                    <label for="regCompanyName" class="form-label small fw-semibold text-muted">Razón Social</label>
+                    <input 
+                      type="text" 
+                      id="regCompanyName" 
+                      formControlName="companyName"
+                      class="form-control bg-light rounded-3" 
+                      [class.is-invalid]="rf['companyName'].touched && rf['companyName'].invalid"
+                      placeholder="Mi Empresa S.A.C." 
+                      required
+                    />
+                    @if (rf['companyName'].touched && rf['companyName'].invalid) {
+                      <div class="invalid-feedback small mt-1">
+                        La Razón Social es requerida para empresas.
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+
+              <!-- Teléfono -->
+              <div class="mb-3">
+                <label for="regPhone" class="form-label small fw-semibold text-muted">Número Celular</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light border-end-0 rounded-start-3 text-muted">
+                    <span class="material-icons-outlined fs-5">phone</span>
+                  </span>
+                  <input 
+                    type="tel" 
+                    id="regPhone" 
+                    formControlName="phone"
+                    class="form-control bg-light border-start-0 rounded-end-3" 
+                    [class.is-invalid]="rf['phone'].touched && rf['phone'].invalid"
+                    placeholder="9XXXXXXXX" 
+                    maxlength="9"
+                    required
+                  />
+                  @if (rf['phone'].touched && rf['phone'].invalid) {
+                    <div class="invalid-feedback small mt-1">
+                      @if (rf['phone'].errors?.['required']) { El celular es obligatorio. }
+                      @if (rf['phone'].errors?.['pattern']) { Debe ser un número de celular de 9 dígitos. }
+                    </div>
+                  }
+                </div>
+              </div>
+
+              <!-- Correo Electrónico -->
+              <div class="mb-3">
+                <label for="regEmail" class="form-label small fw-semibold text-muted">Correo Electrónico</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light border-end-0 rounded-start-3 text-muted">
+                    <span class="material-icons-outlined fs-5">mail</span>
+                  </span>
+                  <input 
+                    type="email" 
+                    id="regEmail" 
+                    formControlName="email"
+                    class="form-control bg-light border-start-0 rounded-end-3" 
+                    [class.is-invalid]="rf['email'].touched && rf['email'].invalid"
+                    placeholder="ejemplo@empresa.com" 
+                    autocomplete="email"
+                    required
+                  />
+                  @if (rf['email'].touched && rf['email'].invalid) {
+                    <div class="invalid-feedback small mt-1">
+                      @if (rf['email'].errors?.['required']) { El correo electrónico es requerido. }
+                      @if (rf['email'].errors?.['email']) { Ingresa un formato de correo válido. }
+                    </div>
+                  }
+                </div>
+              </div>
+
+              <!-- Contraseña -->
+              <div class="mb-3">
+                <label for="regPassword" class="form-label small fw-semibold text-muted mb-1">Contraseña</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light border-end-0 rounded-start-3 text-muted">
+                    <span class="material-icons-outlined fs-5">lock</span>
+                  </span>
+                  <input 
+                    [type]="showRegisterPasswordFlag ? 'text' : 'password'" 
+                    id="regPassword" 
+                    formControlName="password"
+                    class="form-control bg-light border-start-0 border-end-0" 
+                    [class.is-invalid]="rf['password'].touched && rf['password'].invalid"
+                    placeholder="••••••••" 
+                    autocomplete="new-password"
+                    required
+                  />
+                  <button 
+                    type="button" 
+                    class="input-group-text bg-light border-start-0 rounded-end-3 text-muted hover-opacity cursor-pointer border" 
+                    (click)="togglePasswordVisibility('register')"
+                    style="border-color: #dee2e6;"
+                  >
+                    <span class="material-icons-outlined fs-5">
+                      {{ showRegisterPasswordFlag ? 'visibility_off' : 'visibility' }}
+                    </span>
+                  </button>
+                  @if (rf['password'].touched && rf['password'].invalid) {
+                    <div class="invalid-feedback small mt-1">
+                      La contraseña no cumple con los requisitos de seguridad.
+                    </div>
+                  }
+                </div>
+
+                <!-- Requisitos Visuales de Contraseña (Premium Feedback) -->
+                <div class="mt-2 p-2.5 bg-light rounded-3 small">
+                  <span class="text-xs fw-semibold text-muted d-block mb-1">Requisitos de la contraseña:</span>
+                  <ul class="list-unstyled mb-0 text-xs d-flex flex-wrap gap-x-3 gap-y-1">
+                    <!-- Rule 1: Longitud -->
+                    <li [class.text-success]="rf['password'].value?.length >= 8" [class.text-muted]="!rf['password'].value?.length || rf['password'].value?.length < 8">
+                      <span class="material-icons-outlined align-middle fs-6" style="font-size: 14px;">
+                        {{ rf['password'].value?.length >= 8 ? 'check_circle' : 'circle' }}
+                      </span>
+                      <span class="ms-1">Mín. 8 caracteres</span>
+                    </li>
+                    <!-- Rule 2: Mayúscula -->
+                    <li [class.text-success]="(rf['password'].value && /[A-Z]/.test(rf['password'].value))" [class.text-muted]="!(rf['password'].value && /[A-Z]/.test(rf['password'].value))">
+                      <span class="material-icons-outlined align-middle fs-6" style="font-size: 14px;">
+                        {{ (rf['password'].value && /[A-Z]/.test(rf['password'].value)) ? 'check_circle' : 'circle' }}
+                      </span>
+                      <span class="ms-1">1 Mayúscula</span>
+                    </li>
+                    <!-- Rule 3: Número -->
+                    <li [class.text-success]="(rf['password'].value && /[0-9]/.test(rf['password'].value))" [class.text-muted]="!(rf['password'].value && /[0-9]/.test(rf['password'].value))">
+                      <span class="material-icons-outlined align-middle fs-6" style="font-size: 14px;">
+                        {{ (rf['password'].value && /[0-9]/.test(rf['password'].value)) ? 'check_circle' : 'circle' }}
+                      </span>
+                      <span class="ms-1">1 Número</span>
+                    </li>
+                    <!-- Rule 4: Caracter Especial -->
+                    <li [class.text-success]="(rf['password'].value && /[\W_]/.test(rf['password'].value))" [class.text-muted]="!(rf['password'].value && /[\W_]/.test(rf['password'].value))">
+                      <span class="material-icons-outlined align-middle fs-6" style="font-size: 14px;">
+                        {{ (rf['password'].value && /[\W_]/.test(rf['password'].value)) ? 'check_circle' : 'circle' }}
+                      </span>
+                      <span class="ms-1">1 Símbolo</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <!-- Confirmar Contraseña -->
+              <div class="mb-3">
+                <label for="regConfirmPassword" class="form-label small fw-semibold text-muted">Confirmar Contraseña</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light border-end-0 rounded-start-3 text-muted">
+                    <span class="material-icons-outlined fs-5">lock_reset</span>
+                  </span>
+                  <input 
+                    [type]="showRegisterConfirmPasswordFlag ? 'text' : 'password'" 
+                    id="regConfirmPassword" 
+                    formControlName="confirmPassword"
+                    class="form-control bg-light border-start-0 border-end-0" 
+                    [class.is-invalid]="rf['confirmPassword'].touched && rf['confirmPassword'].invalid"
+                    placeholder="••••••••" 
+                    required
+                  />
+                  <button 
+                    type="button" 
+                    class="input-group-text bg-light border-start-0 rounded-end-3 text-muted hover-opacity cursor-pointer border" 
+                    (click)="togglePasswordVisibility('registerConfirm')"
+                    style="border-color: #dee2e6;"
+                  >
+                    <span class="material-icons-outlined fs-5">
+                      {{ showRegisterConfirmPasswordFlag ? 'visibility_off' : 'visibility' }}
+                    </span>
+                  </button>
+                  @if (rf['confirmPassword'].touched && rf['confirmPassword'].invalid) {
+                    <div class="invalid-feedback small mt-1">
+                      @if (rf['confirmPassword'].errors?.['required']) { La confirmación es requerida. }
+                      @if (rf['confirmPassword'].errors?.['passwordMismatch']) { Las contraseñas no coinciden. }
+                    </div>
+                  }
+                </div>
+              </div>
+
+              <!-- Aceptar Términos -->
+              <div class="mb-4">
+                <div class="form-check d-flex align-items-start">
+                  <input 
+                    type="checkbox" 
+                    id="agreeTerms" 
+                    formControlName="agreeTerms"
+                    class="form-check-input me-2 mt-1 cursor-pointer" 
+                    [class.is-invalid]="rf['agreeTerms'].touched && rf['agreeTerms'].invalid"
+                    style="accent-color: var(--brand-green);"
+                  />
+                  <label class="form-check-label small text-muted cursor-pointer mb-0" for="agreeTerms">
+                    Acepto los <a href="#" class="text-brand-green fw-semibold text-decoration-none">Términos de Servicio</a> y la <a href="#" class="text-brand-green fw-semibold text-decoration-none">Política de Privacidad</a> de Braedt.
+                  </label>
+                </div>
+                @if (rf['agreeTerms'].touched && rf['agreeTerms'].invalid) {
+                  <div class="text-danger small mt-1" style="font-size: 11.5px; padding-left: 24px;">
+                    Debes aceptar los términos y condiciones para continuar.
+                  </div>
+                }
+              </div>
+
+              <!-- Botón de Envío -->
+              <button 
+                type="submit" 
+                [disabled]="isLoading"
+                class="btn btn-brand-green w-100 py-2.5 rounded-3 fw-bold mb-3 d-flex align-items-center justify-content-center gap-2 position-relative shadow-sm"
+              >
+                @if (isLoading) {
+                  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                  <span>Registrando...</span>
+                } @else {
+                  <span>Crear Cuenta</span>
+                  <span class="material-icons-outlined fs-5">how_to_reg</span>
+                }
+              </button>
+
+              <!-- Enlace a Login -->
+              <div class="text-center pt-2">
+                <p class="text-muted small mb-0">
+                  ¿Ya tienes una cuenta?
+                  <button 
+                    type="button" 
+                    (click)="switchView('login')" 
+                    class="btn btn-link text-brand-green p-0 fw-bold text-decoration-none ms-1 small align-baseline"
+                  >
+                    Inicia sesión aquí
+                  </button>
+                </p>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      }
+
+      <!-- ==================== VISTA: PERFIL DE USUARIO ==================== -->
+      @if (viewState === 'profile' && currentUser) {
+        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+          <div class="card-body">
+            
+            @if (!isEditingProfile) {
+              <!-- Encabezado del Perfil -->
+              <div class="text-center mb-4 pb-3 border-bottom">
+                <div class="avatar-placeholder bg-brand-green text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3 shadow-sm" style="width: 72px; height: 72px;">
+                  <span class="material-icons-outlined fs-1" style="font-size: 40px;">business_center</span>
+                </div>
+                <h4 class="fw-bold text-dark mb-1">{{ currentUser.name }}</h4>
+                <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1.5 small fw-semibold">
+                  {{ currentUser.ruc ? 'Cliente Corporativo (B2B)' : 'Cliente Mayorista' }}
+                </span>
+              </div>
+
+              <!-- Mensaje de Éxito de Edición -->
+              @if (profileSuccess) {
+                <div class="alert alert-success border-0 rounded-3 d-flex align-items-center gap-2 small py-2.5 px-3 mb-4" role="alert">
+                  <span class="material-icons-outlined text-success fs-5">check_circle_outline</span>
+                  <span>Datos actualizados con éxito.</span>
+                </div>
+              }
+
+              <!-- Detalles de Cuenta -->
+              <div class="mb-4">
+                <h6 class="fw-bold text-dark mb-3 small text-uppercase tracking-wider">Detalles de la Cuenta</h6>
+                
+                <div class="d-flex flex-column gap-3">
+                  <!-- Email -->
+                  <div class="d-flex align-items-start gap-3">
+                    <span class="material-icons-outlined text-muted mt-0.5">mail</span>
+                    <div>
+                      <span class="d-block small text-muted lh-1">Correo Electrónico</span>
+                      <span class="fw-semibold text-dark">{{ currentUser.email }}</span>
+                    </div>
+                  </div>
+
+                  <!-- Celular -->
+                  @if (currentUser.phone) {
+                    <div class="d-flex align-items-start gap-3">
+                      <span class="material-icons-outlined text-muted mt-0.5">phone</span>
+                      <div>
+                        <span class="d-block small text-muted lh-1">Teléfono / Celular</span>
+                        <span class="fw-semibold text-dark">{{ currentUser.phone }}</span>
+                      </div>
+                    </div>
+                  }
+
+                  <!-- Dirección -->
+                  <div class="d-flex align-items-start gap-3">
+                    <span class="material-icons-outlined text-muted mt-0.5">location_on</span>
+                    <div>
+                      <span class="d-block small text-muted lh-1">Dirección de Entrega</span>
+                      <span class="fw-semibold text-dark">{{ currentUser.address || 'No especificada' }}</span>
+                    </div>
+                  </div>
+
+                  <!-- RUC -->
+                  @if (currentUser.ruc) {
+                    <div class="d-flex align-items-start gap-3">
+                      <span class="material-icons-outlined text-muted mt-0.5">business</span>
+                      <div>
+                        <span class="d-block small text-muted lh-1">RUC de la Empresa</span>
+                        <span class="fw-semibold text-dark">{{ currentUser.ruc }}</span>
+                      </div>
+                    </div>
+                  }
+
+                  <!-- Empresa -->
+                  @if (currentUser.companyName && currentUser.companyName !== currentUser.name) {
+                    <div class="d-flex align-items-start gap-3">
+                      <span class="material-icons-outlined text-muted mt-0.5">corporate_fare</span>
+                      <div>
+                        <span class="d-block small text-muted lh-1">Razón Social</span>
+                        <span class="fw-semibold text-dark">{{ currentUser.companyName }}</span>
+                      </div>
+                    </div>
+                  }
+
+                  <!-- Fecha de Registro -->
+                  <div class="d-flex align-items-start gap-3">
+                    <span class="material-icons-outlined text-muted mt-0.5">calendar_today</span>
+                    <div>
+                      <span class="d-block small text-muted lh-1">Fecha de Registro</span>
+                      <span class="fw-semibold text-dark">{{ currentUser.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Panel de Acciones Corporativas -->
+              <div class="bg-light p-3 rounded-4 mb-4 border border-light-subtle">
+                <h6 class="fw-bold text-dark mb-2 small">Beneficios Activos</h6>
+                <ul class="list-unstyled mb-0 small text-muted d-flex flex-column gap-1.5">
+                  <li class="d-flex align-items-center gap-2">
+                    <span class="material-icons-outlined text-success fs-6" style="font-size: 16px;">check_circle</span>
+                    <span>Escalas de precios por volumen activadas</span>
+                  </li>
+                  <li class="d-flex align-items-center gap-2">
+                    <span class="material-icons-outlined text-success fs-6" style="font-size: 16px;">check_circle</span>
+                    <span>Opción de facturación electrónica</span>
+                  </li>
+                  <li class="d-flex align-items-center gap-2">
+                    <span class="material-icons-outlined text-success fs-6" style="font-size: 16px;">check_circle</span>
+                    <span>Soporte corporativo prioritario</span>
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Botones Vista Normal -->
+              <div class="d-flex flex-column gap-2">
+                <button 
+                  type="button" 
+                  (click)="startEditing()"
+                  class="btn btn-brand-green py-2.5 rounded-3 fw-bold d-flex align-items-center justify-content-center gap-2 shadow-sm"
+                >
+                  <span class="material-icons-outlined fs-5">edit</span>
+                  <span>Modificar Datos</span>
+                </button>
+
+                <a routerLink="/catalogo" class="btn btn-outline-dark py-2.5 rounded-3 fw-bold d-flex align-items-center justify-content-center gap-2">
+                  <span class="material-icons-outlined fs-5">shopping_bag</span>
+                  <span>Ir al Catálogo</span>
+                </a>
+                
+                <button 
+                  type="button" 
+                  (click)="onLogout()"
+                  class="btn btn-danger py-2.5 rounded-3 fw-bold d-flex align-items-center justify-content-center gap-2"
+                  style="background-color: var(--brand-vivid-red); border-color: var(--brand-vivid-red);"
+                >
+                  <span class="material-icons-outlined fs-5">logout</span>
+                  <span>Cerrar Sesión</span>
+                </button>
+              </div>
+
+            } @else {
+              <!-- Formulario de Edición de Perfil -->
+              <div class="text-center mb-4 pb-3 border-bottom">
+                <h4 class="fw-bold text-dark mb-1">Modificar Datos</h4>
+                <p class="text-muted small">Edita tu nombre, número de celular o dirección de entrega</p>
+              </div>
+
+              @if (profileError) {
+                <div class="alert alert-danger border-0 rounded-3 d-flex align-items-center gap-2 small py-2.5 px-3 mb-4" role="alert">
+                  <span class="material-icons-outlined text-danger fs-5">error_outline</span>
+                  <span>{{ profileError }}</span>
+                </div>
+              }
+
+              <form [formGroup]="profileForm" (ngSubmit)="onUpdateProfile()" novalidate>
+                
+                <!-- Nombre / Razón Social -->
+                <div class="mb-3">
+                  <label for="editName" class="form-label small fw-semibold text-muted">
+                    {{ currentUser.ruc ? 'Razón Social / Contacto' : 'Nombre Completo' }}
+                  </label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0 rounded-start-3 text-muted">
+                      <span class="material-icons-outlined fs-5">person</span>
+                    </span>
+                    <input 
+                      type="text" 
+                      id="editName" 
+                      formControlName="name"
+                      class="form-control bg-light border-start-0 rounded-end-3" 
+                      [class.is-invalid]="pf['name'].touched && pf['name'].invalid"
+                      placeholder="Nombre del titular"
+                      required
+                    />
+                    @if (pf['name'].touched && pf['name'].invalid) {
+                      <div class="invalid-feedback small mt-1">
+                        @if (pf['name'].errors?.['required']) { El nombre es requerido. }
+                        @if (pf['name'].errors?.['minlength']) { Debe tener al menos 3 caracteres. }
+                      </div>
+                    }
+                  </div>
+                </div>
+
+                <!-- Teléfono -->
+                <div class="mb-3">
+                  <label for="editPhone" class="form-label small fw-semibold text-muted">Teléfono / Celular</label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0 rounded-start-3 text-muted">
+                      <span class="material-icons-outlined fs-5">phone</span>
+                    </span>
+                    <input 
+                      type="tel" 
+                      id="editPhone" 
+                      formControlName="phone"
+                      class="form-control bg-light border-start-0 rounded-end-3" 
+                      [class.is-invalid]="pf['phone'].touched && pf['phone'].invalid"
+                      placeholder="9XXXXXXXX"
+                      maxlength="9"
+                      required
+                    />
+                    @if (pf['phone'].touched && pf['phone'].invalid) {
+                      <div class="invalid-feedback small mt-1">
+                        @if (pf['phone'].errors?.['required']) { El teléfono es requerido. }
+                        @if (pf['phone'].errors?.['pattern']) { Debe ser un número de celular de 9 dígitos. }
+                      </div>
+                    }
+                  </div>
+                </div>
+
+                <!-- Dirección -->
+                <div class="mb-4">
+                  <label for="editAddress" class="form-label small fw-semibold text-muted">Dirección de Entrega</label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0 rounded-start-3 text-muted">
+                      <span class="material-icons-outlined fs-5">location_on</span>
+                    </span>
+                    <input 
+                      type="text" 
+                      id="editAddress" 
+                      formControlName="address"
+                      class="form-control bg-light border-start-0 rounded-end-3" 
+                      [class.is-invalid]="pf['address'].touched && pf['address'].invalid"
+                      placeholder="Av. Principal 123, San Isidro, Lima"
+                      required
+                    />
+                    @if (pf['address'].touched && pf['address'].invalid) {
+                      <div class="invalid-feedback small mt-1">
+                        @if (pf['address'].errors?.['required']) { La dirección de entrega es requerida. }
+                        @if (pf['address'].errors?.['minlength']) { La dirección debe tener al menos 5 caracteres. }
+                      </div>
+                    }
+                  </div>
+                </div>
+
+                <!-- Botones del Formulario de Edición -->
+                <div class="d-flex flex-column gap-2">
+                  <button 
+                    type="submit" 
+                    [disabled]="isLoading"
+                    class="btn btn-brand-green py-2.5 rounded-3 fw-bold d-flex align-items-center justify-content-center gap-2 shadow-sm"
+                  >
+                    @if (isLoading) {
+                      <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                      <span>Guardando cambios...</span>
+                    } @else {
+                      <span class="material-icons-outlined fs-5">save</span>
+                      <span>Guardar Cambios</span>
+                    }
+                  </button>
+
+                  <button 
+                    type="button" 
+                    [disabled]="isLoading"
+                    (click)="cancelEditing()"
+                    class="btn btn-outline-secondary py-2.5 rounded-3 fw-bold d-flex align-items-center justify-content-center gap-2"
+                  >
+                    <span>Cancelar</span>
+                  </button>
+                </div>
+
+              </form>
+            }
+
+          </div>
+        </div>
+      }
+
     </div>
   </div>
+</div>

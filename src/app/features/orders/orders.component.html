@@ -1,0 +1,258 @@
+<div class="container-xl py-4 fade-in">
+  <h2 class="fw-bold mb-4 text-dark">Historial de Pedidos</h2>
+
+  <!-- ==================== CASO: NO LOGUEADO ==================== -->
+  @if (loggedInUserEmail === null) {
+    <div class="card border-0 shadow-sm rounded-4 p-5 text-center bg-white">
+      <div class="card-body">
+        <div class="mb-4 d-inline-flex p-4 bg-light rounded-circle text-muted">
+          <span class="material-icons-outlined" style="font-size: 64px;">lock</span>
+        </div>
+        <h4 class="fw-bold text-dark mb-2">Inicia Sesión para ver tus pedidos</h4>
+        <p class="text-muted mb-4 max-width-md mx-auto">
+          Para poder consultar tu historial de pedidos corporativos y realizar el seguimiento de tus despachos, es necesario estar autenticado.
+        </p>
+        <a routerLink="/cuenta" class="btn btn-brand-green px-4 py-2.5 rounded-3 fw-bold shadow-sm">
+          Iniciar Sesión
+        </a>
+      </div>
+    </div>
+  }
+
+  <!-- ==================== CASO: LOGUEADO Y CARGANDO ==================== -->
+  @else if (isLoading) {
+    <div class="d-flex flex-column align-items-center justify-content-center py-5">
+      <div class="spinner-border text-brand-green" role="status" style="width: 3rem; height: 3rem;">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+      <span class="mt-3 text-muted fw-medium">Cargando historial de pedidos...</span>
+    </div>
+  }
+
+  <!-- ==================== CASO: LOGUEADO Y SIN PEDIDOS ==================== -->
+  @else if (orders.length === 0) {
+    <div class="card border-0 shadow-sm rounded-4 p-5 text-center bg-white">
+      <div class="card-body">
+        <div class="mb-4 d-inline-flex p-4 bg-light rounded-circle text-muted">
+          <span class="material-icons-outlined" style="font-size: 64px;">assignment_late</span>
+        </div>
+        <h4 class="fw-bold text-dark mb-2">No tienes pedidos registrados</h4>
+        <p class="text-muted mb-4 max-width-md mx-auto">
+          Aún no has realizado ninguna compra con tu cuenta corporativa. Visita nuestro catálogo para realizar tu primer pedido mayorista.
+        </p>
+        <a routerLink="/catalogo" class="btn btn-brand-green px-4 py-2.5 rounded-3 fw-bold shadow-sm">
+          Explorar Catálogo
+        </a>
+      </div>
+    </div>
+  }
+
+  <!-- ==================== CASO: HISTORIAL DISPONIBLE ==================== -->
+  @else {
+    <div class="row g-4">
+      
+      <!-- COLUMNA IZQUIERDA: LISTADO DE PEDIDOS (HU-017) -->
+      <div class="col-12 col-md-5 col-lg-4">
+        <div class="card border-0 shadow-sm rounded-4 bg-white overflow-hidden">
+          <div class="p-3 bg-light border-bottom">
+            <h6 class="mb-0 fw-bold text-dark text-uppercase tracking-wider small">Tus Pedidos Mayoristas</h6>
+          </div>
+          <div class="list-group list-group-flush overflow-auto scrollbar-thin" style="max-height: 600px;">
+            @for (order of orders; track order.id) {
+              <button 
+                type="button" 
+                (click)="selectOrder(order)"
+                class="list-group-item list-group-item-action p-3 text-start border-bottom position-relative transition-all"
+                [class.active-order-item]="selectedOrder?.id === order.id"
+              >
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                  <span class="fw-bold text-dark">{{ order.id }}</span>
+                  <span class="badge rounded-pill small fw-medium" [ngClass]="getStatusBadgeClass(order.status)">
+                    {{ order.status }}
+                  </span>
+                </div>
+                
+                <div class="text-xs text-muted mb-2">
+                  <span class="d-block">Realizado: {{ order.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+                  <span class="d-block mt-0.5">Despacho: {{ order.deliveryDate | date:'dd/MM/yyyy' }}</span>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mt-1">
+                  <span class="text-xs text-muted">{{ order.items.length }} {{ order.items.length === 1 ? 'ítem' : 'ítems' }}</span>
+                  <span class="fw-bold text-brand-vivid-red small">S/ {{ order.total | number:'1.2-2' }}</span>
+                </div>
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- COLUMNA DERECHA: DETALLE Y TRAZABILIDAD (HU-018) -->
+      <div class="col-12 col-md-7 col-lg-8">
+        @if (selectedOrder) {
+          <div class="card border-0 shadow-sm rounded-4 bg-white p-3 p-sm-4">
+            <div class="card-body p-0">
+              
+              <!-- Cabecera del Detalle -->
+              <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center border-bottom pb-3 mb-4 gap-2">
+                <div>
+                  <span class="text-muted text-xs text-uppercase fw-semibold tracking-wider">Detalles del Pedido</span>
+                  <h4 class="fw-bold text-dark mb-0">{{ selectedOrder.id }}</h4>
+                </div>
+                <div>
+                  <span class="badge rounded-pill px-3 py-2 small fw-semibold" [ngClass]="getStatusBadgeClass(selectedOrder.status)">
+                    Estado: {{ selectedOrder.status }}
+                  </span>
+                </div>
+              </div>
+
+              <!-- SECCIÓN: TRAZABILIDAD DEL PEDIDO (HU-018) -->
+              <div class="mb-5 bg-light p-4 rounded-4 border border-light-subtle">
+                <h6 class="fw-bold text-dark mb-4 text-uppercase tracking-wider small">Trazabilidad del Despacho</h6>
+                
+                <!-- Stepper Progress Line -->
+                <div class="position-relative my-4 px-2">
+                  <!-- Línea de Fondo -->
+                  <div class="progress position-absolute top-50 start-0 translate-middle-y w-100" style="height: 4px; z-index: 1;">
+                    <div 
+                      class="progress-bar bg-success" 
+                      role="progressbar" 
+                      [style.width]="(getStatusStepIndex(selectedOrder.status) * 33.33) + '%'" 
+                      aria-valuemin="0" 
+                      aria-valuemax="100"
+                    ></div>
+                  </div>
+                  
+                  <!-- Nodos del Stepper -->
+                  <div class="d-flex justify-content-between position-relative" style="z-index: 2;">
+                    
+                    <!-- Paso 0: Registrado -->
+                    <div class="text-center" style="width: 70px;">
+                      <div 
+                        class="rounded-circle d-flex align-items-center justify-content-center mx-auto shadow-sm border transition-all" 
+                        [ngClass]="getStatusStepIndex(selectedOrder.status) >= 0 ? 'bg-success text-white border-success' : 'bg-white text-muted border-secondary-subtle'" 
+                        style="width: 38px; height: 38px;"
+                      >
+                        <span class="material-icons-outlined fs-6" style="font-size: 18px;">receipt</span>
+                      </div>
+                      <span class="d-block text-xs fw-bold text-dark mt-2.5">Registrado</span>
+                    </div>
+
+                    <!-- Paso 1: En preparación -->
+                    <div class="text-center" style="width: 75px;">
+                      <div 
+                        class="rounded-circle d-flex align-items-center justify-content-center mx-auto shadow-sm border transition-all" 
+                        [ngClass]="getStatusStepIndex(selectedOrder.status) >= 1 ? 'bg-success text-white border-success' : 'bg-white text-muted border-secondary-subtle'" 
+                        style="width: 38px; height: 38px;"
+                      >
+                        <span class="material-icons-outlined fs-6" style="font-size: 18px;">inventory</span>
+                      </div>
+                      <span class="d-block text-xs fw-bold text-dark mt-2.5">Preparando</span>
+                    </div>
+
+                    <!-- Paso 2: En camino -->
+                    <div class="text-center" style="width: 70px;">
+                      <div 
+                        class="rounded-circle d-flex align-items-center justify-content-center mx-auto shadow-sm border transition-all" 
+                        [ngClass]="getStatusStepIndex(selectedOrder.status) >= 2 ? 'bg-success text-white border-success' : 'bg-white text-muted border-secondary-subtle'" 
+                        style="width: 38px; height: 38px;"
+                      >
+                        <span class="material-icons-outlined fs-6" style="font-size: 18px;">local_shipping</span>
+                      </div>
+                      <span class="d-block text-xs fw-bold text-dark mt-2.5">En camino</span>
+                    </div>
+
+                    <!-- Paso 3: Entregado -->
+                    <div class="text-center" style="width: 70px;">
+                      <div 
+                        class="rounded-circle d-flex align-items-center justify-content-center mx-auto shadow-sm border transition-all" 
+                        [ngClass]="getStatusStepIndex(selectedOrder.status) >= 3 ? 'bg-success text-white border-success' : 'bg-white text-muted border-secondary-subtle'" 
+                        style="width: 38px; height: 38px;"
+                      >
+                        <span class="material-icons-outlined fs-6" style="font-size: 18px;">check_circle</span>
+                      </div>
+                      <span class="d-block text-xs fw-bold text-dark mt-2.5">Entregado</span>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+              <!-- Información de Despacho -->
+              <div class="row g-4 mb-4">
+                <div class="col-12 col-sm-6">
+                  <div class="p-3 bg-light rounded-4 border border-light-subtle h-100">
+                    <span class="d-block text-muted text-xs fw-semibold text-uppercase tracking-wider mb-2">Destinatario y Envío</span>
+                    <span class="d-block fw-bold text-dark small mb-1">{{ selectedOrder.customerName }}</span>
+                    <span class="d-flex align-items-start gap-1.5 text-xs text-muted mb-1">
+                      <span class="material-icons-outlined text-muted" style="font-size: 15px;">location_on</span>
+                      <span>{{ selectedOrder.address }}</span>
+                    </span>
+                    <span class="d-flex align-items-center gap-1.5 text-xs text-muted">
+                      <span class="material-icons-outlined text-muted" style="font-size: 15px;">event</span>
+                      <span>Entrega programada: {{ selectedOrder.deliveryDate | date:'dd/MM/yyyy' }}</span>
+                    </span>
+                  </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                  <div class="p-3 bg-light rounded-4 border border-light-subtle h-100">
+                    <span class="d-block text-muted text-xs fw-semibold text-uppercase tracking-wider mb-2">Resumen Financiero</span>
+                    <div class="d-flex justify-content-between text-xs text-muted mb-1.5">
+                      <span>Método de Pago:</span>
+                      <span class="fw-semibold text-dark">{{ selectedOrder.paymentMethod === 'tarjeta' ? 'Tarjeta Crédito/Débito' : 'Contraentrega' }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between text-xs text-muted mb-1.5">
+                      <span>Subtotal:</span>
+                      <span class="fw-semibold text-dark">S/ {{ selectedOrder.subtotal | number:'1.2-2' }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between text-xs text-muted">
+                      <span>Envío:</span>
+                      <span class="fw-semibold text-dark">
+                        {{ selectedOrder.shipping === 0 ? 'Gratis' : 'S/ ' + (selectedOrder.shipping | number:'1.2-2') }}
+                      </span>
+                    </div>
+                    <div class="border-top border-secondary-subtle mt-2 pt-1.5 d-flex justify-content-between text-sm fw-bold">
+                      <span class="text-dark">Total:</span>
+                      <span class="text-brand-vivid-red">S/ {{ selectedOrder.total | number:'1.2-2' }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Detalle de Productos -->
+              <div>
+                <h6 class="fw-bold text-dark mb-3 text-uppercase tracking-wider small">Detalle del Pedido</h6>
+                <div class="table-responsive border rounded-4 bg-white">
+                  <table class="table table-borderless align-middle mb-0 small">
+                    <thead class="bg-light text-muted text-uppercase text-xs border-bottom">
+                      <tr>
+                        <th class="ps-3 py-2.5">Producto</th>
+                        <th class="py-2.5 text-center">P. Unitario</th>
+                        <th class="py-2.5 text-center">Cantidad</th>
+                        <th class="pe-3 py-2.5 text-end">Total</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (item of selectedOrder.items; track item.productId) {
+                        <tr class="border-bottom">
+                          <td class="ps-3 py-2.5">
+                            <span class="fw-semibold text-dark d-block">{{ item.name }}</span>
+                          </td>
+                          <td class="py-2.5 text-center text-muted">S/ {{ item.price | number:'1.2-2' }}</td>
+                          <td class="py-2.5 text-center text-muted">{{ item.qty }}</td>
+                          <td class="pe-3 py-2.5 text-end fw-bold text-dark">S/ {{ item.lineTotal | number:'1.2-2' }}</td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        }
+      </div>
+
+    </div>
+  }
+</div>

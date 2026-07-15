@@ -1,13 +1,19 @@
 :root {
-  --brand-green: #1B593C;
-  --brand-gold: #e6ac40;
-  --brand-dark-red: #A61508;
-  --brand-vivid-red: #BF0F0F;
+  --brand-green: #1B4A36; /* Verde pino oficial del logotipo */
+  --brand-green-dark: #123325;
+  --brand-gold: #C69C4A; /* Oro mostaza oficial del logotipo */
+  --brand-gold-light: #E4C77E;
+  --brand-dark-red: #A61D13; /* Rojo carmesí oficial del logotipo */
+  --brand-vivid-red: #A61D13;
+  --brand-cream: #FAF6EF; /* Crema cálido de fondo */
+  --brand-charcoal: #171613;
+  --brand-ink: #2B2A26;
 }
 
 body {
-  font-family: 'Satoshi', system-ui, -apple-system, sans-serif;
-  background-color: #f8fafc;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background-color: var(--brand-cream);
+  color: var(--brand-ink);
 }
 
 .scrollbar-thin::-webkit-scrollbar { height: 8px; width: 8px; }
@@ -35,14 +41,144 @@ body {
 .bg-brand-vivid-red { background-color: var(--brand-vivid-red) !important; }
 .text-brand-gold { color: var(--brand-gold) !important; }
 
+h1, h2, h3, h4, h5, h6, .font-serif {
+  font-family: Georgia, 'Times New Roman', serif;
+  color: var(--brand-charcoal);
+}
+
 .app-shell {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: #fff;
+  background-color: var(--brand-cream);
 }
 
 .app-header {
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(18px);
+  background: var(--brand-green) !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+.app-header a {
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+.app-header a:hover {
+  color: var(--brand-gold-light) !important;
+}
+
+/* Subrayado premium para enlaces activos */
+.app-header a.text-brand-gold::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 100%;
+  height: 2px;
+  background-color: var(--brand-gold-light);
+  border-radius: 2px;
+  animation: slide-in 0.2s ease-out;
+}
+
+@keyframes slide-in {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+/* Botones Premium */
+.btn-success {
+  background-color: var(--brand-green) !important;
+  border-color: var(--brand-green) !important;
+  color: #ffffff !important;
+  font-family: Georgia, serif;
+  font-weight: 600;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-success:hover, .btn-success:focus {
+  background-color: var(--brand-green-dark) !important;
+  border-color: var(--brand-green-dark) !important;
+  color: var(--brand-gold-light) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(27, 74, 54, 0.25) !important;
+}
+
+.btn-success:disabled {
+  background-color: #e2e8f0 !important;
+  border-color: #cbd5e1 !important;
+  color: #94a3b8 !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.btn-white {
+  background-color: #ffffff !important;
+  border-color: #ffffff !important;
+  color: var(--brand-green) !important;
+  font-family: Georgia, serif;
+  font-weight: 700 !important;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-white:hover {
+  background-color: var(--brand-gold-light) !important;
+  border-color: var(--brand-gold-light) !important;
+  color: var(--brand-green-dark) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+.btn-outline-success {
+  color: var(--brand-green) !important;
+  border-color: var(--brand-green) !important;
+  font-family: Georgia, serif;
+  font-weight: 600;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-outline-success:hover {
+  background-color: var(--brand-green) !important;
+  color: #ffffff !important;
+  transform: translateY(-1px);
+}
+
+.active-order-item {
+  background-color: #fcf9f2 !important;
+  border-left: 4px solid var(--brand-gold) !important;
+}
+
+.bg-success-subtle-light {
+  background-color: #fcf9f2 !important;
+}
+
+.hover-shadow {
+  transition: all 0.2s ease-in-out;
+}
+
+.hover-shadow:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 .5rem 1rem rgba(0,0,0,.08) !important;
+}
+
+.text-line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
+}
+
+.text-xxs {
+  font-size: 0.7rem !important;
+}
+
+.last-border-0:last-child {
+  border-bottom: 0 !important;
+}
+
+.duration-300 {
+  transition-duration: 300ms;
+}
+
+.scale-105 {
+  transform: scale(1.05);
 }

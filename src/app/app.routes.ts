@@ -21,5 +21,13 @@ export const routes: Routes = [
     path: 'cuenta', 
     loadComponent: () => import('./features/account/account.component').then(m => m.AccountComponent)
   },
+  {
+    path: 'ordenes',
+    loadComponent: () => import('./features/orders/orders.component').then(m => m.OrdersComponent)
+  },
+  {
+    path: 'recetas',
+    loadComponent: () => import('./features/recipes/recipes.component').then(m => m.RecipesComponent)
+  },
   { path: '**', redirectTo: '' } // Redirección de seguridad
 ];

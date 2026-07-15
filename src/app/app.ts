@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CartService } from './core/services/cart.service';
+import { AuthService } from './core/services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -16,11 +17,21 @@ export class AppComponent implements OnInit {
   public cartCount: number = 0;
   public userName: string = 'Mi cuenta';
 
-  constructor(private cartService: CartService) {}
+  constructor(
+    private cartService: CartService,
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     this.cartService.cartItems$.subscribe(items => {
       this.cartCount = items.reduce((sum, item) => sum + item.qty, 0);
+      this.cdr.detectChanges();
+    });
+
+    this.authService.currentUser$.subscribe(user => {
+      this.userName = user ? user.name : 'Mi cuenta';
+      this.cdr.detectChanges();
     });
   }
 

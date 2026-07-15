@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Braedt — Preview de rediseño</title>
+        <style>
+            :root {
+                --pine: #1f3226;
+                --pine-dark: #142219;
+                --gold: #c69c4a;
+                --gold-light: #e4c77e;
+                --rust: #7a2e1d;
+                --cream: #faf6ef;
+                --charcoal: #171613;
+                --ink: #2b2a26;
+            }
+            * {
+                box-sizing: border-box;
+            }
+            body {
+                margin: 0;
+                font-family:
+                    "Segoe UI",
+                    system-ui,
+                    -apple-system,
+                    sans-serif;
+                background: var(--cream);
+                color: var(--ink);
+            }
+            .section-label {
+                font-size: 12px;
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+                color: #8a8a80;
+                padding: 24px 32px 8px;
+            }
+            .swatches {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 12px;
+                padding: 0 32px 32px;
+            }
+            .swatch {
+                width: 160px;
+                border-radius: 10px;
+                overflow: hidden;
+                border: 1px solid rgba(0, 0, 0, 0.08);
+            }
+            .swatch-color {
+                height: 70px;
+            }
+            .swatch-meta {
+                background: #fff;
+                padding: 8px 10px;
+            }
+            .swatch-meta p {
+                margin: 0;
+                font-size: 12px;
+            }
+            .swatch-meta .name {
+                font-weight: 600;
+                color: var(--ink);
+            }
+            .swatch-meta .hex {
+                color: #888;
+                font-family: monospace;
+            }
+
+            header {
+                background: var(--pine);
+                padding: 14px 32px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+            header .logo {
+                color: #fff;
+                font-weight: 700;
+                font-size: 18px;
+                letter-spacing: 0.02em;
+            }
+            header nav a {
+                color: rgba(255, 255, 255, 0.85);
+                text-decoration: none;
+                margin-left: 28px;
+                font-size: 14px;
+                position: relative;
+                padding-bottom: 3px;
+            }
+            header nav a.active {
+                color: var(--gold-light);
+            }
+            header nav a.active::after {
+                content: "";
+                position: absolute;
+                left: 0;
+                bottom: -3px;
+                width: 100%;
+                height: 2px;
+                background: var(--gold-light);
+            }
+
+            .hero {
+                position: relative;
+                min-height: 480px;
+                display: flex;
+                align-items: center;
+                padding: 60px 32px;
+                background:
+                    linear-gradient(
+                        120deg,
+                        rgba(20, 34, 25, 0.94) 0%,
+                        rgba(20, 34, 25, 0.72) 45%,
+                        rgba(20, 34, 25, 0.55) 100%
+                    ),
+                    radial-gradient(
+                        circle at 75% 30%,
+                        #3a4a34 0%,
+                        var(--pine-dark) 70%
+                    );
+            }
+            .hero-inner {
+                max-width: 620px;
+            }
+            .badge-heritage {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                background: rgba(255, 255, 255, 0.08);
+                border: 1px solid rgba(230, 199, 126, 0.4);
+                color: var(--gold-light);
+                font-size: 13px;
+                padding: 6px 14px;
+                border-radius: 999px;
+                margin-bottom: 20px;
+            }
+            .hero h1 {
+                font-family: Georgia, "Times New Roman", serif;
+                font-weight: 600;
+                font-size: 48px;
+                line-height: 1.12;
+                color: #fff;
+                margin: 0 0 18px;
+            }
+            .hero h1 em {
+                font-style: normal;
+                color: var(--gold-light);
+            }
+            .hero p {
+                color: rgba(255, 255, 255, 0.82);
+                font-size: 17px;
+                line-height: 1.6;
+                margin: 0 0 28px;
+                max-width: 480px;
+            }
+            .hero-ctas {
+                display: flex;
+                align-items: center;
+                gap: 20px;
+            }
+            .btn-primary {
+                background: var(--gold);
+                color: var(--pine-dark);
+                border: none;
+                padding: 13px 28px;
+                border-radius: 6px;
+                font-weight: 600;
+                font-size: 15px;
+                cursor: pointer;
+            }
+            .btn-link {
+                color: #fff;
+                text-decoration: underline;
+                text-underline-offset: 4px;
+                font-size: 15px;
+            }
+
+            .why {
+                background: #fff;
+                padding: 48px 32px;
+                display: flex;
+                gap: 40px;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            .why-item {
+                max-width: 220px;
+                text-align: center;
+            }
+            .why-item .num {
+                color: var(--rust);
+                font-weight: 700;
+                font-size: 22px;
+                font-family: Georgia, serif;
+            }
+            .why-item p {
+                font-size: 14px;
+                color: #555;
+                margin: 6px 0 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="section-label">Paleta propuesta</div>
+        <div class="swatches">
+            <div class="swatch">
+                <div class="swatch-color" style="background: var(--pine)"></div>
+                <div class="swatch-meta">
+                    <p class="name">Pino profundo</p>
+                    <p class="hex">#1F3226</p>
+                </div>
+            </div>
+            <div class="swatch">
+                <div class="swatch-color" style="background: var(--gold)"></div>
+                <div class="swatch-meta">
+                    <p class="name">Oro mostaza</p>
+                    <p class="hex">#C69C4A</p>
+                </div>
+            </div>
+            <div class="swatch">
+                <div class="swatch-color" style="background: var(--rust)"></div>
+                <div class="swatch-meta">
+                    <p class="name">Óxido / rust</p>
+                    <p class="hex">#7A2E1D</p>
+                </div>
+            </div>
+            <div class="swatch">
+                <div
+                    class="swatch-color"
+                    style="background: var(--cream)"
+                ></div>
+                <div class="swatch-meta">
+                    <p class="name">Crema cálido</p>
+                    <p class="hex">#FAF6EF</p>
+                </div>
+            </div>
+            <div class="swatch">
+                <div
+                    class="swatch-color"
+                    style="background: var(--charcoal)"
+                ></div>
+                <div class="swatch-meta">
+                    <p class="name">Carbón</p>
+                    <p class="hex">#171613</p>
+                </div>
+            </div>
+        </div>
+
+        <header>
+            <div class="logo">BRAEDT</div>
+            <nav>
+                <a href="#" class="active">Catálogo</a>
+                <a href="#">Órdenes</a>
+                <a href="#">Chat</a>
+            </nav>
+        </header>
+
+        <section class="hero">
+            <div class="hero-inner">
+                <div class="badge-heritage">
+                    ★ Más de 140 años de tradición alemana
+                </div>
+                <h1>Calidad alemana para <em>tu negocio</em></h1>
+                <p>
+                    Embutidos premium, cadena de frío garantizada y precios
+                    mayoristas para impulsar tus ventas.
+                </p>
+                <div class="hero-ctas">
+                    <button class="btn-primary">Explorar catálogo</button>
+                    <a href="#" class="btn-link">Conocer más</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="why">
+            <div class="why-item">
+                <div class="num">140+</div>
+                <p>años de tradición y calidad certificada</p>
+            </div>
+            <div class="why-item">
+                <div class="num">−18°C</div>
+                <p>cadena de frío ininterrumpida en cada entrega</p>
+            </div>
+            <div class="why-item">
+                <div class="num">S/600</div>
+                <p>envío gratis en compras mayoristas</p>
+            </div>
+        </section>
+    </body>
+</html>

@@ -1,19 +1,17 @@
 <div class="app-shell flex-column">
-  
+
   <div class="bg-brand-dark-red text-white text-center py-2 d-none d-md-flex align-items-center justify-content-center gap-2 small fw-medium">
     <span class="material-icons-outlined fs-6">ac_unit</span>
-    <span>Compra directa de Braedt • Entrega refrigerada • Envío gratis desde S/ 600</span>
+    <span>Compra directa de Braedt • Entrega refrigerada • Envío gratis desde S/ 100</span>
   </div>
 
   <header class="app-header sticky-top border-bottom bg-brand-green shadow-sm">
     <div class="container-xl px-3 px-sm-4">
       <div class="d-flex align-items-center justify-content-between" style="height: 64px;">
-        
+
         <a routerLink="/" class="d-flex align-items-center gap-2 text-decoration-none">
-          <div class="d-flex align-items-center" style="height: 48px;">
-            <img src="hhttps://upload.wikimedia.org/wikipedia/commons/f/fc/UPC_logo_transparente.png" alt="Braedt" class="h-100 object-fit-contain"/>
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTiMNwMlt3u9aSH-0Lsi3yw_mFeMu1sbIq_hwPkvL2nTxPV4cp2UZwAXPI&s=10" class="ms-2 d-none d-sm-block object-fit-contain" style="height: 32px;">
-          </div>
+          <span class="text-white fw-bold fs-4 tracking-widest font-serif" style="letter-spacing: 0.15em;">BRAEDT</span>
+          <span class="text-brand-gold fs-5">★</span>
         </a>
 
         <div class="d-none d-md-flex align-items-center gap-4 w-50">
@@ -23,7 +21,7 @@
           </div>
           <a routerLink="/catalogo" routerLinkActive="text-brand-gold fw-bold" class="text-white text-decoration-none small fw-medium">Catálogo</a>
           <a routerLink="/ordenes" routerLinkActive="text-brand-gold fw-bold" class="text-white text-decoration-none small fw-medium">Órdenes</a>
-          <a routerLink="/chat" routerLinkActive="text-brand-gold fw-bold" class="text-white text-decoration-none small fw-medium">Chat</a>
+          <a routerLink="/recetas" routerLinkActive="text-brand-gold fw-bold" class="text-white text-decoration-none small fw-medium">Recetas</a>
         </div>
 
         <div class="d-flex align-items-center gap-3">
@@ -31,7 +29,7 @@
             <span class="material-icons-outlined">account_circle</span>
             <span class="d-none d-sm-inline small fw-medium">{{ userName }}</span>
           </a>
-          
+
           <a routerLink="/carrito" routerLinkActive="text-brand-gold" class="text-white text-decoration-none d-flex align-items-center gap-2 position-relative me-2">
             <div class="position-relative d-inline-flex align-items-center justify-content-center">
               <span class="material-icons-outlined">shopping_cart</span>
@@ -59,26 +57,26 @@
       <nav class="nav justify-content-around pb-3 small">
         <a routerLink="/catalogo" (click)="toggleMobileMenu()" class="nav-link text-white px-2">Catálogo</a>
         <a routerLink="/ordenes" (click)="toggleMobileMenu()" class="nav-link text-white px-2">Órdenes</a>
-        <a routerLink="/chat" (click)="toggleMobileMenu()" class="nav-link text-white px-2">Chat</a>
+        <a routerLink="/recetas" (click)="toggleMobileMenu()" class="nav-link text-white px-2">Recetas</a>
         <a routerLink="/cuenta" (click)="toggleMobileMenu()" class="nav-link text-white px-2">Cuenta</a>
       </nav>
     </div>
   </header>
 
-  <main class="flex-grow-1 container-xl py-4">
+  <main class="flex-grow-1">
     <router-outlet></router-outlet>
   </main>
 
   <footer class="bg-dark text-light-emphasis mt-auto py-5 border-top border-secondary">
     <div class="container-xl">
       <div class="row g-4 justify-content-between">
-        
+
         <div class="col-12 col-md-5 text-center text-md-start">
           <div class="d-flex flex-column flex-sm-row align-items-center gap-3 mb-3 justify-content-center justify-content-md-start">
-            <img src="https://braedt.com.pe/build/assets/braedt-logo-white-KFemSUCQ.svg" alt="Braedt" style="height: 60px;"/>
+            <span class="text-white fw-bold fs-3 tracking-widest font-serif" style="letter-spacing: 0.15em;">BRAEDT</span>
             <div class="border-start border-secondary ps-3 text-start d-none d-sm-block">
-              <p class="text-white-50 small mb-0">Una marca de</p>
-              <img src="https://braedt.com.pe/build/assets/logo-sigma-BZRSnheM.svg" alt="Sigma" style="height: 20px;">
+              <p class="text-white-50 small mb-0">Tradición Alemana</p>
+              <p class="text-brand-gold font-serif mb-0" style="font-size: 0.7rem; font-weight: 700;">★ DESDE 1885 ★</p>
             </div>
           </div>
           <p class="small text-white-50 max-width-md">Compra directa de embutidos Braedt: precios mayoristas, escalas por volumen y entrega altamente refrigerada para su negocio.</p>
@@ -89,7 +87,7 @@
           <ul class="list-unstyled d-flex flex-column gap-2 small">
             <li><a routerLink="/catalogo" class="text-white-50 text-decoration-none hover-link">Catálogo</a></li>
             <li><a routerLink="/ordenes" class="text-white-50 text-decoration-none hover-link">Órdenes</a></li>
-            <li><a routerLink="/chat" class="text-white-50 text-decoration-none hover-link">Chat</a></li>
+            <li><a routerLink="/recetas" class="text-white-50 text-decoration-none hover-link">Recetas</a></li>
             <li><a routerLink="/cuenta" class="text-white-50 text-decoration-none hover-link">Cuenta</a></li>
           </ul>
         </div>

@@ -1,0 +1,232 @@
+<div class="container-xl py-4 fade-in">
+  
+  <!-- Success Toast Overlay -->
+  @if (showSuccessToast) {
+    <div class="position-fixed top-0 end-0 p-3" style="z-index: 1080;">
+      <div class="toast show align-items-center text-white bg-success border-0 shadow-lg rounded-3 p-2" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex align-items-center gap-2">
+          <span class="material-icons-outlined">check_circle</span>
+          <div class="toast-body small fw-medium">
+            {{ toastMessage }}
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
+    <div>
+      <h2 class="fw-bold text-dark mb-1">Recetas Gourmet Braedt</h2>
+      <p class="text-muted small mb-0">Prepara platos deliciosos escalando las porciones y agrega los embutidos requeridos directamente a tu pedido.</p>
+    </div>
+  </div>
+
+  <!-- Filtros por Categoría -->
+  <div class="d-flex flex-wrap gap-2 mb-4">
+    <button 
+      (click)="setCategory('todas')" 
+      class="btn px-4 py-2 rounded-pill fw-semibold text-xs transition-all border"
+      [ngClass]="activeCategory === 'todas' ? 'btn-success border-success text-white shadow-sm' : 'btn-light border-secondary-subtle text-muted'"
+    >
+      Todas las recetas
+    </button>
+    <button 
+      (click)="setCategory('desayuno')" 
+      class="btn px-4 py-2 rounded-pill fw-semibold text-xs transition-all border"
+      [ngClass]="activeCategory === 'desayuno' ? 'btn-success border-success text-white shadow-sm' : 'btn-light border-secondary-subtle text-muted'"
+    >
+      Desayunos
+    </button>
+    <button 
+      (click)="setCategory('almuerzo')" 
+      class="btn px-4 py-2 rounded-pill fw-semibold text-xs transition-all border"
+      [ngClass]="activeCategory === 'almuerzo' ? 'btn-success border-success text-white shadow-sm' : 'btn-light border-secondary-subtle text-muted'"
+    >
+      Almuerzos
+    </button>
+    <button 
+      (click)="setCategory('cena')" 
+      class="btn px-4 py-2 rounded-pill fw-semibold text-xs transition-all border"
+      [ngClass]="activeCategory === 'cena' ? 'btn-success border-success text-white shadow-sm' : 'btn-light border-secondary-subtle text-muted'"
+    >
+      Cenas / Parrillas
+    </button>
+    <button 
+      (click)="setCategory('piqueo')" 
+      class="btn px-4 py-2 rounded-pill fw-semibold text-xs transition-all border"
+      [ngClass]="activeCategory === 'piqueo' ? 'btn-success border-success text-white shadow-sm' : 'btn-light border-secondary-subtle text-muted'"
+    >
+      Piqueos / Reuniones
+    </button>
+  </div>
+
+  <div class="row g-4">
+    
+    <!-- COLUMNA IZQUIERDA: LISTADO DE TARJETAS DE RECETA -->
+    <div class="col-12 col-lg-5">
+      <div class="d-flex flex-column gap-3 overflow-auto scrollbar-thin pe-1" style="max-height: 700px;">
+        @for (recipe of getFilteredRecipes(); track recipe.id) {
+          <div 
+            (click)="selectRecipe(recipe)" 
+            class="card border border-light-subtle shadow-sm rounded-4 overflow-hidden cursor-pointer transition-all hover-shadow"
+            [ngClass]="selectedRecipe?.id === recipe.id ? 'border-success bg-success-subtle-light' : 'bg-white'"
+            style="min-height: 120px;"
+          >
+            <div class="row g-0 h-100">
+              <div class="col-4 position-relative">
+                <img 
+                  [src]="recipe.image" 
+                  [alt]="recipe.name" 
+                  class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover transition-transform duration-300"
+                  [ngClass]="selectedRecipe?.id === recipe.id ? 'scale-105' : ''"
+                >
+              </div>
+              <div class="col-8">
+                <div class="card-body p-3">
+                  <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="text-muted text-xxs text-uppercase fw-bold tracking-wider">{{ recipe.category }}</span>
+                    <div class="d-flex gap-2">
+                      <span class="badge bg-light text-muted border text-xxs fw-semibold d-flex align-items-center gap-0.5">
+                        <span class="material-icons-outlined" style="font-size: 11px;">schedule</span>
+                        {{ recipe.prepTime }}
+                      </span>
+                    </div>
+                  </div>
+                  <h6 class="card-title fw-bold text-dark mb-1 text-truncate">{{ recipe.name }}</h6>
+                  <p class="card-text text-muted text-xs text-line-clamp-2 mb-0">{{ recipe.description }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- COLUMNA DERECHA: FICHA DETALLADA Y ESCALADO INTERACTIVO -->
+    <div class="col-12 col-lg-7">
+      @if (selectedRecipe) {
+        <div class="card border-0 shadow-sm rounded-4 bg-white p-4">
+          <div class="card-body p-0">
+            
+            <!-- Imagen Detalle -->
+            <div class="ratio ratio-21x9 bg-light rounded-4 overflow-hidden mb-4 shadow-sm">
+              <img [src]="selectedRecipe.image" [alt]="selectedRecipe.name" class="object-fit-cover">
+            </div>
+
+            <!-- Ficha Técnica -->
+            <div class="d-flex flex-wrap align-items-center gap-3 mb-3">
+              <span class="badge rounded-pill bg-success text-white px-3 py-1.5 fw-semibold text-xxs text-uppercase tracking-wider">
+                {{ selectedRecipe.category }}
+              </span>
+              <span class="text-muted text-xs d-flex align-items-center gap-1 border-end pe-3">
+                <span class="material-icons-outlined text-muted fs-6">schedule</span>
+                <strong>Preparación:</strong> {{ selectedRecipe.prepTime }}
+              </span>
+              <span class="text-muted text-xs d-flex align-items-center gap-1">
+                <span class="material-icons-outlined text-muted fs-6">bar_chart</span>
+                <strong>Dificultad:</strong> {{ selectedRecipe.difficulty }}
+              </span>
+            </div>
+
+            <h3 class="fw-bold text-dark mb-2">{{ selectedRecipe.name }}</h3>
+            <p class="text-muted small mb-4">{{ selectedRecipe.description }}</p>
+
+            <!-- SELECTOR DE COMENSALES (HU-014 alternative) -->
+            <div class="bg-light p-3.5 rounded-4 border border-light-subtle mb-4">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <label class="fw-bold text-dark small text-uppercase tracking-wider">¿Para cuántas personas vas a cocinar?</label>
+                <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1.5 fs-6 fw-bold rounded-3">
+                  {{ servings }} comensales
+                </span>
+              </div>
+              <div class="d-flex align-items-center gap-3">
+                <span class="text-muted text-xs fw-semibold">2</span>
+                <input 
+                  type="range" 
+                  min="2" 
+                  max="24" 
+                  step="2" 
+                  [(ngModel)]="servings" 
+                  class="form-range flex-grow-1 custom-range"
+                >
+                <span class="text-muted text-xs fw-semibold">24</span>
+              </div>
+              <small class="text-muted text-xxs mt-1 d-block">Ajusta el slider para recalcular automáticamente los embutidos Braedt y complementos necesarios.</small>
+            </div>
+
+            <!-- INGREDIENTES -->
+            <div class="row g-4 mb-4">
+              <!-- Ingredientes Braedt (Directos del Catálogo) -->
+              <div class="col-12 col-md-6">
+                <h6 class="fw-bold text-dark mb-3 text-uppercase tracking-wider small d-flex align-items-center gap-1.5">
+                  <span class="material-icons-outlined text-success" style="font-size: 18px;">local_mall</span>
+                  Embutidos Braedt Requeridos
+                </h6>
+                <div class="d-flex flex-column gap-3.5">
+                  @for (ing of selectedRecipe.ingredients; track ing.name) {
+                    @if (ing.productId) {
+                      <div class="p-3 bg-light rounded-4 border border-light-subtle">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                          <div>
+                            <span class="fw-bold text-dark d-block small">{{ ing.name }}</span>
+                            @if (ing.product) {
+                              <span class="text-muted text-xxs d-block">{{ ing.product.unit }} • MOQ: {{ ing.product.moq }} unidades</span>
+                            }
+                          </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center mt-2.5 pt-2 border-top border-secondary-subtle text-xs">
+                          <span class="text-muted">Necesario: <strong>{{ calculateRequiredQty(ing.baseQtyPerPerson) }} paq.</strong></span>
+                          <span class="badge bg-success text-white fw-bold">Pedir: {{ calculatePurchaseQty(ing) }} paq.</span>
+                        </div>
+                        @if (ing.product && calculateRequiredQty(ing.baseQtyPerPerson) < ing.product.moq) {
+                          <div class="text-warning-emphasis bg-warning-subtle border border-warning-subtle text-xxs p-1.5 rounded-3 mt-2 d-flex align-items-center gap-1">
+                            <span class="material-icons-outlined" style="font-size: 13px;">info</span>
+                            <span>Ajustado al Pedido Mínimo (MOQ) de la tienda.</span>
+                          </div>
+                        }
+                      </div>
+                    }
+                  }
+                </div>
+              </div>
+
+              <!-- Ingredientes Secundarios (No en Tienda) -->
+              <div class="col-12 col-md-6">
+                <h6 class="fw-bold text-dark mb-3 text-uppercase tracking-wider small d-flex align-items-center gap-1.5">
+                  <span class="material-icons-outlined text-muted" style="font-size: 18px;">restaurant_menu</span>
+                  Ingredientes Complementarios
+                </h6>
+                <div class="card border border-light-subtle rounded-4 bg-white p-3">
+                  <ul class="list-unstyled mb-0 d-flex flex-column gap-3.5">
+                    @for (ing of selectedRecipe.ingredients; track ing.name) {
+                      @if (!ing.productId) {
+                        <li class="d-flex justify-content-between align-items-center text-xs pb-2.5 border-bottom last-border-0">
+                          <span class="text-dark fw-medium">{{ ing.name }}</span>
+                          <span class="text-muted bg-light border px-2 py-0.5 rounded-3 fw-bold">
+                            {{ calculateRequiredQty(ing.baseQtyPerPerson) | number:'1.0-2' }} {{ ing.unit }}
+                          </span>
+                        </li>
+                      }
+                    }
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- BOTÓN PRINCIPAL COMPRA EN 1-CLIC -->
+            <button 
+              (click)="addIngredientsToCart()" 
+              class="btn btn-success w-100 py-3 rounded-3 fw-bold fs-6 d-flex justify-content-center align-items-center gap-2 shadow-sm transition-all hover-scale"
+            >
+              <span class="material-icons-outlined">add_shopping_cart</span>
+              Agregar embutidos Braedt al carrito
+            </button>
+
+          </div>
+        </div>
+      }
+    </div>
+
+  </div>
+</div>
